@@ -18,7 +18,8 @@ public class AuthenticationService {
     public String authenticate(String email, String password) {
         try {
             // Construire la requête pour l'authentification
-            HttpPost post = new HttpPost("https://localhost:8000/api/login_check");
+            HttpPost post = new HttpPost("http://localhost:8000/api/login_check");
+            post.setHeader("Accept", "application/json");
             post.setHeader("Content-Type", "application/json");
 
             // Créer le corps de la requête (json, par exemple)
@@ -30,6 +31,9 @@ public class AuthenticationService {
                 HttpEntity entity = response.getEntity();
                 String responseString = EntityUtils.toString(entity);
 
+                System.out.println("Request JSON: " + json);
+                System.out.println("Response Status: " + response.getStatusLine());
+                System.out.println("Response Body: " + responseString);
                 // Traiter la réponse (par exemple, récupérer un token)
                 if (response.getStatusLine().getStatusCode() == 200) {
                     // Exemple d'extraction d'un token ou d'un message
