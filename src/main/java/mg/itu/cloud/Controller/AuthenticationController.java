@@ -14,6 +14,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest) {
+        //utiliser setters et getters
         return authenticationService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
     }
 }
