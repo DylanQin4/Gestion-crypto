@@ -1,0 +1,7 @@
+/* frontend/src/css/tailwind.css */
+@tailwind base;
+@tailwind components;
+
+@import 'flowbite/dist/flowbite.css';
+
+@tailwind utilities;
