@@ -5,6 +5,17 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE user_roles (
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role_id INT NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
+);
+
 CREATE TABLE cryptocurrencies (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,

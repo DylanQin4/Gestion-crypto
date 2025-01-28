@@ -1,22 +1,21 @@
 package mg.itu.cloud.Auth;
 
-import mg.itu.cloud.user.UtilisateurService;
-import org.springframework.beans.factory.annotation.Autowired;
+import mg.itu.cloud.user.UserService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
-    private final UtilisateurService utilisateurService;
+    private final UserService userService;
 
-    public AuthenticationController(AuthenticationService authenticationService, UtilisateurService utilisateurService) {
+    public AuthenticationController(AuthenticationService authenticationService, UserService userService) {
         this.authenticationService = authenticationService;
-        this.utilisateurService = utilisateurService;
+        this.userService = userService;
     }
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest) {
-        if (!utilisateurService.checkIfEmailExists(loginRequest.getEmail())) {
+        if (!userService.checkIfEmailExists(loginRequest.getEmail())) {
             return "Vous n'etes pas inscrit";
         }
         return authenticationService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());

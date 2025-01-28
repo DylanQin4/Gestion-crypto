@@ -1,8 +1,10 @@
 package mg.itu.cloud.Auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mg.itu.cloud.user.Utilisateur;
-import mg.itu.cloud.user.UtilisateurService;
+import mg.itu.cloud.user.Role;
+import mg.itu.cloud.user.Roles;
+import mg.itu.cloud.user.User;
+import mg.itu.cloud.user.UserService;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -10,19 +12,20 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class AuthenticationService {
     private final CloseableHttpClient httpClient;
-    private final UtilisateurService utilisateurService;
+    private final UserService userService;
 
-    public AuthenticationService(CloseableHttpClient httpClient, UtilisateurService utilisateurService) {
+    public AuthenticationService(CloseableHttpClient httpClient, UserService userService) {
         this.httpClient = httpClient;
-        this.utilisateurService = utilisateurService;
+        this.userService = userService;
     }
 
     public String authenticate(String email, String password) {
@@ -60,14 +63,14 @@ public class AuthenticationService {
     }
 
     public String register(String email, String nom, String password) {
-        Utilisateur newUser = null;
+        User newUser = null;
         try {
             // Construire la requête pour l'inscription
             HttpPost post = new HttpPost("http://localhost:8000/api/register");
             post.setHeader("Accept", "application/json");
             post.setHeader("Content-Type", "application/json");
 
-            newUser = utilisateurService.save(new Utilisateur(nom, email));
+            newUser = userService.save(new User(email, nom, Set.of(new Role(Roles.USER.toString()))));
 
             // Créer le corps de la requête (json)
             String json = String.format(
@@ -106,7 +109,7 @@ public class AuthenticationService {
             }
         } catch (Exception e) {
             if (newUser != null) {
-                utilisateurService.delete(newUser);
+                userService.delete(newUser);
             }
             return e.getMessage();
         }
