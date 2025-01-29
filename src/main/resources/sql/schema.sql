@@ -47,11 +47,14 @@ CREATE TABLE crypto_movements (
     quantity NUMERIC(18, 8) NOT NULL CHECK (quantity > 0)
 );
 
--- Table of Price History (pour la graphique)
+-- Table Historique des Prix avec Open, High, Low, Close
 CREATE TABLE price_history (
     id SERIAL PRIMARY KEY,
     cryptocurrency_id INT NOT NULL REFERENCES cryptocurrencies(id) ON DELETE CASCADE,
-    price NUMERIC(18, 8) NOT NULL CHECK (price >= 0),
+    open NUMERIC(18, 8) NOT NULL CHECK (open >= 0),
+    high NUMERIC(18, 8) NOT NULL CHECK (high >= open),
+    low NUMERIC(18, 8) NOT NULL CHECK (low <= open AND low >= 0),
+    close NUMERIC(18, 8) NOT NULL CHECK (close >= low AND close <= high),
     record_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -89,13 +92,34 @@ FROM users u
 -- ================================================
 -- Triggers
 -- ================================================
-
 -- Function to log price history
 CREATE OR REPLACE FUNCTION update_price_history()
     RETURNS TRIGGER AS $$
+DECLARE
+    last_close NUMERIC(18, 8);
+    high NUMERIC(18, 8);
+    low NUMERIC(18, 8);
 BEGIN
-    INSERT INTO price_history (cryptocurrency_id, price)
-    VALUES (NEW.id, NEW.unit_price);
+    -- Récupérer le dernier prix de clôture
+    SELECT close INTO last_close
+    FROM price_history
+    WHERE cryptocurrency_id = NEW.id
+    ORDER BY record_date DESC
+    LIMIT 1;
+
+    -- Si aucun historique, initialiser à NEW.unit_price
+    IF NOT FOUND THEN
+        last_close := NEW.unit_price;
+    END IF;
+
+    -- Générer high et low avec une variation aléatoire
+    high := last_close * (1 + (random() * 0.02)); -- Jusqu'à +2%
+    low := last_close * (1 - (random() * 0.02));  -- Jusqu'à -2%
+
+    -- Insérer la nouvelle entrée OHLC
+    INSERT INTO price_history (cryptocurrency_id, open, high, low, close)
+    VALUES (NEW.id, last_close, high, low, NEW.unit_price);
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -107,7 +131,7 @@ CREATE TRIGGER price_history_trigger
 EXECUTE FUNCTION update_price_history();
 
 -- ================================================
--- Real-time Price Updates
+-- Real-time Price Updates with OHLC
 -- ================================================
 
 -- Function to update cryptocurrency prices
@@ -115,43 +139,51 @@ CREATE OR REPLACE FUNCTION update_crypto_prices()
     RETURNS VOID AS $$
 DECLARE
     crypto RECORD;
-    last_price NUMERIC(18, 8);
+    last_close NUMERIC(18, 8);
+    open_price NUMERIC(18, 8);
+    high_price NUMERIC(18, 8);
+    low_price NUMERIC(18, 8);
+    close_price NUMERIC(18, 8);
     variation DOUBLE PRECISION;
 BEGIN
     -- Loop through all cryptocurrencies
-    FOR crypto IN
-        SELECT id, name FROM cryptocurrencies
-        LOOP
-            -- Get the last price of the cryptocurrency
-            SELECT unit_price INTO last_price
-            FROM cryptocurrencies
-            WHERE id = crypto.id
-            ORDER BY created_at DESC
+    FOR crypto IN SELECT id FROM cryptocurrencies LOOP
+            -- Get the last closing price
+            SELECT close INTO last_close
+            FROM price_history
+            WHERE cryptocurrency_id = crypto.id
+            ORDER BY record_date DESC
             LIMIT 1;
 
             -- If no price found, initialize it to 10000
             IF NOT FOUND THEN
-                last_price := 10000;
+                last_close := 10000;
             END IF;
 
-            -- Calculate the random variation between -1% and +1%
+            -- Open price is the last close price
+            open_price := last_close;
+
+            -- Calculate new close price with a random variation
             variation := (random() * 0.02) - 0.01;  -- variation between -1% and +1%
+            close_price := open_price * (1 + variation);
 
-            -- Update the price with the variation
-            last_price := last_price * (1 + variation);
+            -- High and low prices
+            high_price := GREATEST(open_price, close_price) * (1 + (random() * 0.01)); -- max +1%
+            low_price := LEAST(open_price, close_price) * (1 - (random() * 0.01));  -- min -1%
 
-            -- Insert the new price into the price history
-            INSERT INTO price_history (cryptocurrency_id, price)
-            VALUES (crypto.id, last_price);
+            -- Insert the new OHLC prices into the price history
+            INSERT INTO price_history (cryptocurrency_id, open, high, low, close)
+            VALUES (crypto.id, open_price, high_price, low_price, close_price);
 
-            -- Update the cryptocurrencies table with the new price
+            -- Update the cryptocurrencies table with the new closing price
             UPDATE cryptocurrencies
-            SET unit_price = last_price,
+            SET unit_price = close_price,
                 updated_at = NOW()
             WHERE id = crypto.id;
         END LOOP;
 END;
 $$ LANGUAGE plpgsql;
+
 
 -- View to display real-time prices
 CREATE OR REPLACE VIEW real_time_prices_view AS
