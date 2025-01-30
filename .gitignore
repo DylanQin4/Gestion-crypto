@@ -32,7 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 
-/src/main/resources/application.properties
+#/src/main/resources/application.properties
 
-/src/main/resources/static/frontend/node_modules/
+/src/main/frontend/node_modules/
 /src/main/resources/static/css/tailwind-output.css
+
+### JTE ###
+/jte-classes/

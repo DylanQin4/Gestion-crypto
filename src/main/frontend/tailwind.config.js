@@ -2,9 +2,8 @@
 
 module.exports = {
     content: [
-        "../main/resources/templates/**/*.{html,js}",
-        "../main/resources/static/**/*.{html,js}",
-        "./node_modules/flyonui/dist/js/*.js"
+        "../jte/**/*.jte", // Scanne les fichiers JTE et HTML dans les templates
+        "./src/main/resources/static/**/*.css"
     ],
     theme: {
         extend: {},
