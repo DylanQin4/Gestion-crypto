@@ -23,7 +23,7 @@
                     <div class="dropdown-item">
                         <div class="avatar away-bottom">
                             <div class="w-10 rounded-full">
-                                <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-1.png" alt="avatar 1" />
+                                <img src="/fy-assets/avatar/avatar-1.png" alt="avatar 1" />
                             </div>
                         </div>
                         <div class="w-60">
@@ -34,7 +34,7 @@
                     <div class="dropdown-item">
                         <div class="avatar">
                             <div class="w-10 rounded-full">
-                                <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-2.png" alt="avatar 2" />
+                                <img src="/fy-assets/avatar/avatar-2.png" alt="avatar 2" />
                             </div>
                         </div>
                         <div class="w-60">
@@ -45,7 +45,7 @@
                     <div class="dropdown-item">
                         <div class="avatar online-bottom">
                             <div class="w-10 rounded-full">
-                                <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-8.png" alt="avatar 8" />
+                                <img src="/fy-assets/avatar/avatar-8.png" alt="avatar 8" />
                             </div>
                         </div>
                         <div class="w-60">
@@ -67,7 +67,7 @@
                     <div class="dropdown-item">
                         <div class="avatar">
                             <div class="w-10 rounded-full">
-                                <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-10.png" alt="avatar 10" />
+                                <img src="/fy-assets/avatar/avatar-10.png" alt="avatar 10" />
                             </div>
                         </div>
                         <div class="w-60">
@@ -78,7 +78,7 @@
                     <div class="dropdown-item">
                         <div class="avatar">
                             <div class="w-10 rounded-full">
-                                <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-3.png" alt="avatar 3" />
+                                <img src="/fy-assets/avatar/avatar-3.png" alt="avatar 3" />
                             </div>
                         </div>
                         <div class="w-60">
@@ -97,7 +97,7 @@
             <button id="dropdown-scrollable" type="button" class="dropdown-toggle flex items-center" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
                 <div class="avatar">
                     <div class="size-9.5 rounded-full">
-                        <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-1.png" alt="avatar 1" />
+                        <img src="/fy-assets/avatar/avatar-1.png" alt="avatar 1" />
                     </div>
                 </div>
             </button>
@@ -105,7 +105,7 @@
                 <li class="dropdown-header gap-2">
                     <div class="avatar">
                         <div class="w-10 rounded-full">
-                            <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-1.png" alt="avatar" />
+                            <img src="/fy-assets/avatar/avatar-1.png" alt="avatar" />
                         </div>
                     </div>
                     <div>
