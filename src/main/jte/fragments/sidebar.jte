@@ -14,6 +14,13 @@
                     Gestion des fonds
                 </a>
             </li>
+
+            <li>
+                <a href="/crypto-prices">
+                    <img src="/icons/crypto.svg" />
+                    Crypto
+                </a>
+            </li>
         </ul>
     </div>
 </aside>
