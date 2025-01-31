@@ -35,6 +35,7 @@ CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
     wallet_id INT NOT NULL REFERENCES wallets(id) ON DELETE CASCADE,
     transaction_type VARCHAR(20) NOT NULL CHECK (transaction_type IN ('DEPOSIT', 'WITHDRAWAL', 'BUY', 'SELL')),
+    status VARCHAR(10) CHECK (transaction_type IN ('PENDING', 'VALIDATE', 'DELETED')) DEFAULT VALUE "PENDING",
     amount NUMERIC(18, 2) NOT NULL CHECK (amount > 0),
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
