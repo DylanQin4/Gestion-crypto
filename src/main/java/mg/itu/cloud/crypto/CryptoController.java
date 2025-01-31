@@ -16,8 +16,15 @@ import java.util.*;
 @Controller
 @RequestMapping("crypto")
 public class CryptoController {
+    private final CryptoService cryptoService;
+
+    public CryptoController(CryptoService cryptoService) {
+        this.cryptoService = cryptoService;
+    }
+
     @GetMapping
     public String getRealTimePrices(Model model) {
+        model.addAttribute("allCrypto", cryptoService.getAllCryptoWithRealTimePrice());
         return "pages/crypto-prices";
     }
 

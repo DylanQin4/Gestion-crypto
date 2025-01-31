@@ -6,8 +6,9 @@
     <title>True Wallet</title>
     <link rel="stylesheet" href="/css/tailwind-output.css">
     <link rel="stylesheet" href="/apexcharts/src/assets/apexcharts.css">
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Inclure jQuery -->
+
+    <script src="/js/apexcharts.js"></script>
+    <script src="/js/jquery-3.6.0.min.js"></script>
 </head>
 <body class="bg-gray-100">
 <div class="min-h-screen">
@@ -19,14 +20,35 @@
 
     <!-- Main content -->
     <div class="pl-64 min-h-full">
-        <div class="p-6 max-w-7xl sm:px-6 lg:px-8">
-            <div id="candlestickChart"></div>
+        <div class="p-6 sm:px-6 lg:px-8">
+            <div onclick="goBack()" class="flex items-center gap-1 pb-2 cursor-pointer text-gray-700">
+                <img class="h-4 w-6 cursor-pointer" src="/icons/arrow-left.svg"/>
+                Retour
+            </div>
+            <div class="card w-full">
+                <div class="card-body">
+                    <div class="flex flex-col space-y-2">
+                        <h2 class="text-3xl font-bold mb-2">Crypto 1</h2>
+                    </div>
+                    <div id="candlestickChart"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 </body>
 
 <script src="/flyonui/flyonui.js"></script>
+
+<script>
+    function goBack() {
+        if (window.history.length > 1) {
+            history.back();
+        } else {
+            window.location.href = '/crypto';
+        }
+    }
+</script>
 
 @raw
 <script>
@@ -52,17 +74,11 @@
                         }
                     },
                     title: {
-                        text: "Candlestick Chart avec ApexCharts",
-                        align: "left"
+                        text: "Crypto 1",
+                        align: "center"
                     },
                     xaxis: {
-                        type: "category",
-                        labels: {
-                            rotate: -45 // Rotation des étiquettes pour une meilleure lisibilité
-                        },
-                        tooltip: {
-                            enabled: true
-                        }
+                        type: 'datetime'
                     },
                     yaxis: {
                         tooltip: { enabled: true }
