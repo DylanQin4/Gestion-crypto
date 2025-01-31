@@ -37,5 +37,6 @@ build/
 /src/main/frontend/node_modules/
 /src/main/resources/static/css/tailwind-output.css
 
+/src/main/resources/application.properties
 ### JTE ###
 /jte-classes/
