@@ -1,6 +1,9 @@
 package mg.itu.cloud.fund;
 
+import gg.jte.springframework.boot.autoconfigure.JteViewResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,40 +20,40 @@ public class TransactionController {
 
     @GetMapping("/fonds")
     public String afficherPageFonds(Model model) {
-        Long walletId = 1L; // ID du portefeuille (à récupérer dynamiquement)
+        Long walletId = 1L;
 
-        BigDecimal solde = transactionService.getSolde(walletId);  // Corrected method name
+        BigDecimal solde = transactionService.getSolde(walletId);
         List<Transaction> transactions = transactionService.getTransactionHistory(walletId);
 
-        model.addAttribute("solde", solde); // Corrected attribute name
+        model.addAttribute("solde", solde);
         model.addAttribute("transactions", transactions);
 
-        return "jsp/pages/fonds";
+        return "fonds"; 
     }
 
     @PostMapping("/depot")
-    public String deposer(@RequestParam Long walletId, @RequestParam BigDecimal montant, RedirectAttributes redirectAttributes) {
+    public String deposer(@RequestParam Long walletId, @RequestParam BigDecimal amount, RedirectAttributes redirectAttributes) {
         try {
-            transactionService.deposit(walletId, montant); // Corrected method name
+            transactionService.deposit(walletId, amount);
             redirectAttributes.addFlashAttribute("message", "Dépôt effectué avec succès.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (RuntimeException e) { // Catch RuntimeException as well
-            redirectAttributes.addFlashAttribute("error", "Une erreur est survenue lors du dépôt."); // More general error message
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Une erreur est survenue lors du dépôt.");
         }
-        return "redirect:/fonds";
+        return "redirect:/fonds"; 
     }
 
     @PostMapping("/retrait")
-    public String retirer(@RequestParam Long walletId, @RequestParam BigDecimal montant, RedirectAttributes redirectAttributes) {
+    public String retirer(@RequestParam Long walletId, @RequestParam BigDecimal amount, RedirectAttributes redirectAttributes) {
         try {
-            transactionService.withdraw(walletId, montant); // Corrected method name
+            transactionService.withdraw(walletId, amount);
             redirectAttributes.addFlashAttribute("message", "Retrait effectué avec succès.");
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-        } catch (RuntimeException e) { // Catch RuntimeException
+        } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", "Une erreur est survenue lors du retrait.");
         }
-        return "redirect:/fonds";
+        return "redirect:/fonds"; 
     }
 }

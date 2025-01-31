@@ -20,18 +20,18 @@ public class TransactionService {
         this.walletRepository = walletRepository;
     }
 
-    public BigDecimal getSolde(Long walletId) {  // Corrected method name
+    public BigDecimal getSolde(Long walletId) {  
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
-        return wallet.getFundBalance(); // Return the balance directly
+        return wallet.getFundBalance(); 
     }
 
-    public List<Transaction> getTransactionHistory(Long walletId) { // Corrected method name
+    public List<Transaction> getTransactionHistory(Long walletId) {
         return transactionRepository.findByWalletId(walletId);
     }
 
-    public Transaction deposit(Long walletId, BigDecimal amount) {  // Corrected method name
+    public Transaction deposit(Long walletId, BigDecimal amount) { 
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
@@ -42,7 +42,7 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    public Transaction withdraw(Long walletId, BigDecimal amount) {  // Corrected method name
+    public Transaction withdraw(Long walletId, BigDecimal amount) { 
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
