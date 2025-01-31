@@ -1,22 +1,37 @@
 package mg.itu.cloud.fund;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-
-import mg.itu.cloud.fund.*;
-import mg.itu.cloud.wallet.*;
-
-import mg.itu.cloud.fund.TransactionRepository;
-import mg.itu.cloud.wallet.WalletRepository;
-import java.util.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import mg.itu.cloud.wallet.Wallet;
+import mg.itu.cloud.wallet.WalletRepository;
 
 @Service
 public class TransactionService {
-    private TransactionRepository transactionRepository;
-    private WalletRepository walletRepository;
+    private final TransactionRepository transactionRepository;
+    private final WalletRepository walletRepository;
 
-    public Transaction deposit(Long walletId, BigDecimal amount) {
+    @Autowired
+    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository) {
+        this.transactionRepository = transactionRepository;
+        this.walletRepository = walletRepository;
+    }
+
+    public BigDecimal getSolde(Long walletId) {  // Corrected method name
+        Wallet wallet = walletRepository.findById(walletId)
+                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+
+        return wallet.getFundBalance(); // Return the balance directly
+    }
+
+    public List<Transaction> getTransactionHistory(Long walletId) { // Corrected method name
+        return transactionRepository.findByWalletId(walletId);
+    }
+
+    public Transaction deposit(Long walletId, BigDecimal amount) {  // Corrected method name
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
@@ -27,18 +42,18 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-    public Transaction buy(Long walletId, BigDecimal amount) {
+    public Transaction withdraw(Long walletId, BigDecimal amount) {  // Corrected method name
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
         if (wallet.getFundBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient funds for purchase");
+            throw new IllegalArgumentException("Insufficient funds"); // Throw IllegalArgumentException
         }
 
         wallet.setFundBalance(wallet.getFundBalance().subtract(amount));
         walletRepository.save(wallet);
 
-        Transaction transaction = new Transaction(wallet, TransactionType.BUY, TransactionStatus.PENDING, amount);
+        Transaction transaction = new Transaction(wallet, TransactionType.WITHDRAWAL, TransactionStatus.PENDING, amount);
         return transactionRepository.save(transaction);
     }
 }
