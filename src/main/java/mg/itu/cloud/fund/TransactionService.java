@@ -47,7 +47,7 @@ public class TransactionService {
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
         if (wallet.getFundBalance().compareTo(amount) < 0) {
-            throw new IllegalArgumentException("Insufficient funds"); // Throw IllegalArgumentException
+            throw new IllegalArgumentException("Insufficient funds"); 
         }
 
         wallet.setFundBalance(wallet.getFundBalance().subtract(amount));
