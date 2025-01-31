@@ -16,7 +16,7 @@
             </li>
 
             <li>
-                <a href="/crypto-prices">
+                <a href="/crypto">
                     <img src="/icons/crypto.svg" />
                     Crypto
                 </a>
