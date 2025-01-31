@@ -84,6 +84,8 @@ VALUES
     ((SELECT id FROM cryptocurrencies WHERE symbol = 'LTC'), 150.12345678, 155.12345678, 145.12345678, 152.12345678, 0, CURRENT_TIMESTAMP),
     ((SELECT id FROM cryptocurrencies WHERE symbol = 'LINK'), 30.12345678, 32.12345678, 29.12345678, 31.12345678, 0, CURRENT_TIMESTAMP);
 
+SELECT * FROM price_history WHERE cryptocurrency_id = 1 ORDER BY record_date DESC LIMIT 1;
+
 
 DROP TABLE price_history;
 DROP TABLE cryptocurrencies;

@@ -17,10 +17,9 @@ public class Crypto {
     @Column(nullable = false, unique = true, length = 10)
     private String symbol;
 
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @PreUpdate // Mets a jour updatedAt automatiquement avant chaque modification

@@ -16,17 +16,6 @@ public class CryptoService {
         this.priceHistoryService = priceHistoryService;
     }
 
-    public List<RealTimePrice> getAllCryptoWithRealTimePrice() {
-        List<Crypto> allCrypto = getAllCrypto();
-
-        List<RealTimePrice> allCryptoWithRealTimePrice = new ArrayList<>();
-
-        for (Crypto crypto : allCrypto) {
-            allCryptoWithRealTimePrice.add(priceHistoryService.calculateRealTimePrice(crypto.getId()));
-        }
-        return allCryptoWithRealTimePrice;
-    }
-
     public List<Crypto> getAllCrypto() {
         return cryptoRepository.findAll();
     }

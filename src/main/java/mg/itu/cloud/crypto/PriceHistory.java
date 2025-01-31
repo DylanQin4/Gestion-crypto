@@ -30,7 +30,6 @@ public class PriceHistory {
     @Column(nullable = false, precision = 18, scale = 8)
     private BigDecimal change;
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime recordDate = LocalDateTime.now();
 
     @PrePersist // Definit recordDate a la date actuelle avant insertion
@@ -97,8 +96,20 @@ public class PriceHistory {
         this.close = close;
     }
 
+    public BigDecimal getChange() {
+        return change;
+    }
+
+    public void setChange(BigDecimal change) {
+        this.change = change;
+    }
+
     public LocalDateTime getRecordDate() {
         return recordDate;
+    }
+
+    public void setRecordDate(LocalDateTime recordDate) {
+        this.recordDate = recordDate;
     }
 }
 

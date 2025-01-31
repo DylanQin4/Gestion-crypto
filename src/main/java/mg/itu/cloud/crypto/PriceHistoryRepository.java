@@ -17,6 +17,9 @@ public interface PriceHistoryRepository extends JpaRepository<PriceHistory, Inte
     @Query("SELECT p FROM PriceHistory p WHERE p.cryptocurrencyId = :cryptoId ORDER BY p.recordDate DESC LIMIT 2")
     List<PriceHistory> findLastTwoPricesByCryptocurrencyId(@Param("cryptoId") Integer cryptoId);
 
+    @Query("SELECT p FROM PriceHistory p WHERE p.cryptocurrencyId = :cryptoId ORDER BY p.recordDate DESC LIMIT 1")
+    Optional<PriceHistory> findLastPricesByCryptocurrencyId(@Param("cryptoId") Integer cryptoId);
+
     @Query("SELECT p FROM PriceHistory p WHERE p.id > :priceHistoryId AND p.cryptocurrencyId = :cryptoId ORDER BY p.id ASC LIMIT 1")
     Optional<PriceHistory> findNextPriceById(
             @Param("priceHistoryId") Integer priceHistoryId,
