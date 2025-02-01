@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface PriceHistoryRepository extends JpaRepository<PriceHistory, Integer> {
 
-    @Query("SELECT p FROM PriceHistory p WHERE p.cryptocurrencyId = :cryptoId ORDER BY p.recordDate DESC")
+    @Query("SELECT p FROM PriceHistory p WHERE p.cryptocurrencyId = :cryptoId ORDER BY p.recordDate ASC")
     List<PriceHistory> findByCryptocurrencyId(@Param("cryptoId") Integer cryptoId);
 
     @Query("SELECT p FROM PriceHistory p WHERE p.cryptocurrencyId = :cryptoId ORDER BY p.recordDate DESC LIMIT 2")

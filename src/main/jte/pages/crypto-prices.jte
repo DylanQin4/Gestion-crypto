@@ -46,7 +46,7 @@
             cryptoRows.forEach(row => {
                 const id = row.querySelector("td:first-child").textContent; // Récupère l'ID crypto
 
-                fetch("/crypto/price/" + id)
+                fetch("/crypto/last-price/" + id)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error("Erreur lors de la récupération du prix");

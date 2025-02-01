@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -25,48 +26,71 @@ public class PriceHistoryService {
         return priceHistoryRepository.findByCryptocurrencyId(cryptoId);
     }
 
+    public List<Map<String, Object>> getAllPricesForCryptoAsMap(Integer cryptoId) {
+        List<PriceHistory> priceHistories = priceHistoryRepository.findByCryptocurrencyId(cryptoId);
+        return priceHistories.stream().map(this::convertPriceHistoryToMap).toList();
+    }
+
+    public Map<String, Object> convertPriceHistoryToMap(PriceHistory priceHistory) {
+        return Map.of(
+                "id", priceHistory.getId(),
+                "open", priceHistory.getOpen(),
+                "high", priceHistory.getHigh(),
+                "low", priceHistory.getLow(),
+                "close", priceHistory.getClose(),
+                "change", priceHistory.getChange(),
+                "recordDate", priceHistory.getRecordDate()
+        );
+    }
+
     public void generatePrices() {
         List<Crypto> cryptocurrencies = cryptoRepository.findAll();
 
         for (Crypto crypto : cryptocurrencies) {
-            // Recuperer le dernier prix de cette cryptomonnaie
-            Optional<PriceHistory> lastPriceOpt = priceHistoryRepository
-                    .findLastPricesByCryptocurrencyId(crypto.getId());
+            Optional<PriceHistory> lastPriceOpt = priceHistoryRepository.findLastPricesByCryptocurrencyId(crypto.getId());
 
             BigDecimal open;
-            BigDecimal maxVariation;
+            BigDecimal volatility; // Volatilite en valeur absolue
 
             if (lastPriceOpt.isPresent()) {
                 PriceHistory lastPrice = lastPriceOpt.get();
-                open = lastPrice.getClose();  // Nouveau open = ancien close
+                open = lastPrice.getClose().max(BigDecimal.valueOf(0.01)); // Assurer un prix positif
 
-                // Calculer la variation max (±200% de la difference Open/Close precedente)
-                BigDecimal lastVariation = lastPrice.getClose().subtract(lastPrice.getOpen()).abs();
-                maxVariation = lastVariation.multiply(BigDecimal.valueOf(2)); // 200%
-
+                // Definir la volatilite en fonction du prix actuel
+                volatility = open.multiply(BigDecimal.valueOf(0.05)); // 5% du prix actuel
             } else {
-                // Cas ou aucun historique n'existe (premier prix arbitraire)
-                open = BigDecimal.valueOf(100);  // Prix de depart par defaut
-                maxVariation = BigDecimal.valueOf(10);  // Variation max par defaut
+                // Generer un prix initial aleatoire entre 10 et 1000
+                open = BigDecimal.valueOf(10 + (random.nextDouble() * 990)); // Entre 10 et 1000
+
+                // Definir la volatilite initiale
+                volatility = open.multiply(BigDecimal.valueOf(0.05)); // 5% du prix initial
             }
 
-            // Generer une variation aleatoire dans la limite de maxVariation
-            BigDecimal variation = BigDecimal.valueOf(
-                    (random.nextDouble() * 2 - 1) * maxVariation.doubleValue()  // Entre -maxVariation et +maxVariation
-            );
+            // Generer une variation à partir d'une distribution normale
+            double mean = 0.01 * open.doubleValue(); // Legère tendance à la hausse (1% du prix)
+            double stdDev = volatility.doubleValue(); // Volatilite
+            double variation = mean + random.nextGaussian() * stdDev;
 
-            BigDecimal close = open.add(variation);
-            BigDecimal high = close.add(BigDecimal.valueOf(random.nextDouble() * maxVariation.doubleValue() / 2));
-            BigDecimal low = close.subtract(BigDecimal.valueOf(random.nextDouble() * maxVariation.doubleValue() / 2));
+            // Appliquer la variation au prix
+            BigDecimal close = open.add(BigDecimal.valueOf(variation)).max(BigDecimal.valueOf(0.01)); // Assurer que close est positif
 
-            // S'assurer que les valeurs restent logiques
-            if (low.compareTo(BigDecimal.ZERO) < 0) low = BigDecimal.ZERO;
+            // ✅ Calculer les bornes (high et low)
+            BigDecimal high = close.add(BigDecimal.valueOf(random.nextDouble() * stdDev / 2))
+                    .max(open); // high >= open
 
+            BigDecimal low = close.subtract(BigDecimal.valueOf(random.nextDouble() * stdDev / 2))
+                    .min(open) // low <= open
+                    .max(BigDecimal.valueOf(0.01)); // low ≥ 0.01
+
+            // ✅ Assurer que close reste bien entre low et high
+            close = close.max(low).min(high);
+
+            // Enregistrer le nouveau prix
             PriceHistory price = new PriceHistory();
             price.setCryptocurrencyId(crypto.getId());
             price.setOpen(open);
-            price.setHigh(high.max(open));  // high ne doit pas être < open
-            price.setLow(low.min(open));  // low ne doit pas être > open
+            price.setHigh(high);
+            price.setLow(low);
             price.setClose(close);
             price.setChange(close.subtract(open));
             price.setRecordDate(LocalDateTime.now());

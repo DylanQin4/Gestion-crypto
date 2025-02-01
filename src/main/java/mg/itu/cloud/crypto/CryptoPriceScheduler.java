@@ -1,5 +1,6 @@
 package mg.itu.cloud.crypto;
 
+import mg.itu.cloud.Config.AppConstants;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +15,7 @@ public class CryptoPriceScheduler {
         this.priceHistoryService = priceHistoryService;
     }
 
-    @Scheduled(fixedRate = 10000) // 🔄 Toutes les 10 secondes
+    @Scheduled(fixedRate = AppConstants.PRICE_GENERATION_INTERVAL)
     public void schedulePriceGeneration() {
         priceHistoryService.generatePrices();
         System.out.println("📈 Prix des cryptos mis à jour : " + LocalDateTime.now());
