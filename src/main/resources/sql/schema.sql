@@ -88,6 +88,8 @@ VALUES
 
 SELECT * FROM price_history WHERE cryptocurrency_id = 1 ORDER BY record_date DESC LIMIT 1;
 
+TRUNCATE TABLE price_history;
+ALTER SEQUENCE price_history_id_seq RESTART WITH 1;
 
 DROP TABLE price_history;
 DROP TABLE cryptocurrencies;
@@ -133,40 +135,3 @@ FROM users u
 -- ================================================
 -- Triggers
 -- ================================================
--- Function to log price history
-CREATE OR REPLACE FUNCTION update_price_history()
-    RETURNS TRIGGER AS $$
-DECLARE
-    last_close NUMERIC(18, 8);
-    high NUMERIC(18, 8);
-    low NUMERIC(18, 8);
-BEGIN
-    -- Récupérer le dernier prix de clôture
-    SELECT close INTO last_close
-    FROM price_history
-    WHERE cryptocurrency_id = NEW.id
-    ORDER BY record_date DESC
-    LIMIT 1;
-
-    -- Si aucun historique, initialiser à NEW.unit_price
-    IF NOT FOUND THEN
-        last_close := NEW.unit_price;
-    END IF;
-
-    -- Générer high et low avec une variation aléatoire
-    high := last_close * (1 + (random() * 0.02)); -- Jusqu'à +2%
-    low := last_close * (1 - (random() * 0.02));  -- Jusqu'à -2%
-
-    -- Insérer la nouvelle entrée OHLC
-    INSERT INTO price_history (cryptocurrency_id, open, high, low, close)
-    VALUES (NEW.id, last_close, high, low, NEW.unit_price);
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Trigger to log price history after insert or update
-CREATE TRIGGER price_history_trigger
-    AFTER INSERT OR UPDATE ON cryptocurrencies
-    FOR EACH ROW
-EXECUTE FUNCTION update_price_history();
