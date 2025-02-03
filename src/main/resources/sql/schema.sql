@@ -88,8 +88,8 @@ CREATE TABLE price_history (
 
 -- SELECT * FROM price_history WHERE cryptocurrency_id = 1 ORDER BY record_date DESC LIMIT 1;
 
--- TRUNCATE TABLE price_history;
--- ALTER SEQUENCE price_history_id_seq RESTART WITH 1;
+TRUNCATE TABLE price_history;
+ALTER SEQUENCE price_history_id_seq RESTART WITH 1;
 --
 -- DROP TABLE price_history;
 -- DROP TABLE cryptocurrencies;

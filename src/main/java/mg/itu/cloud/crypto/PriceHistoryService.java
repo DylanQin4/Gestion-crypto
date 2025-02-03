@@ -100,7 +100,9 @@ public class PriceHistoryService {
     }
 
     public PriceHistory getLastPriceBy(Integer cryptoId) {
-        return priceHistoryRepository.findLastPricesByCryptocurrencyId(cryptoId).orElse(null);
+        return priceHistoryRepository.findLastPricesByCryptocurrencyId(cryptoId)
+                .orElse(new PriceHistory(null, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO)
+        );
     }
 
     public Optional<PriceHistory> getNextPriceBy(Integer priceHistoryId, Integer cryptoId) {

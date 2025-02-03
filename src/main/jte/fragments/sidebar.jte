@@ -21,6 +21,13 @@
                     Crypto
                 </a>
             </li>
+
+            <li>
+                <a href="/crypto/transactions">
+                    <img class="w-6 h-6" src="/icons/arrow-down-up.svg" />
+                    Acheter/Vendre
+                </a>
+            </li>
         </ul>
     </div>
 </aside>
