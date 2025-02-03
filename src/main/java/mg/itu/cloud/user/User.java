@@ -1,9 +1,11 @@
 package mg.itu.cloud.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.ColumnDefault;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,17 +13,23 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    @ColumnDefault("nextval('users_id_seq')")
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-    @Column(nullable = false)
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false)
+    @Size(max = 150)
+    @NotNull
+    @Column(name = "email", nullable = false, length = 150)
     private String email;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -31,6 +39,11 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @PrePersist
+    public void prePrersist() {
+        this.createdAt = Instant.now();
+    }
+
     public User() {}
 
     public User(String name, String email, Set<Role> roles) {
@@ -39,29 +52,12 @@ public class User {
         setRoles(roles);
     }
 
-    public boolean isAdmin() {
-        return roles.stream().anyMatch(role -> role.getName().equals("ADMIN"));
-    }
-
-    public User(Long id, String name, String email, LocalDateTime createdAt) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.createdAt = createdAt;
-    }
-
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -72,11 +68,19 @@ public class User {
         this.name = name;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 

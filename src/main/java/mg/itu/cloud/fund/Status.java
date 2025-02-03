@@ -1,4 +1,5 @@
 package mg.itu.cloud.fund;
-public enum TransactionStatus {
+
+public enum Status {
     PENDING , VALIDATE, DELETED 
 }

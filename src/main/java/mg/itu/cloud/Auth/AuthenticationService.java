@@ -1,9 +1,9 @@
 package mg.itu.cloud.Auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mg.itu.cloud.user.User;
 import mg.itu.cloud.user.Role;
 import mg.itu.cloud.user.Roles;
-import mg.itu.cloud.user.User;
 import mg.itu.cloud.user.UserService;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,7 +14,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
