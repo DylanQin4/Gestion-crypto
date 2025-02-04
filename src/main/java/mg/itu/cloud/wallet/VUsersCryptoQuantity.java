@@ -1,9 +1,6 @@
 package mg.itu.cloud.wallet;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.Immutable;
 
 import java.math.BigDecimal;
@@ -13,13 +10,20 @@ import java.math.BigDecimal;
 @Table(name = "v_users_crypto_quantity")
 public class VUsersCryptoQuantity {
     @Id
-    Integer id;
+    @Column(name = "id")
+    private Integer id;
 
     @Column(name = "user_id")
     private Integer userId;
 
     @Column(name = "crypto_id")
     private Integer cryptoId;
+
+    @Column(name = "crypto_name")
+    private String cryptoName;
+
+    @Column(name = "crypto_symbol")
+    private String cryptoSymbol;
 
     @Column(name = "total_quantity")
     private BigDecimal totalQuantity;
@@ -30,6 +34,14 @@ public class VUsersCryptoQuantity {
 
     public Integer getCryptoId() {
         return cryptoId;
+    }
+
+    public String getCryptoName() {
+        return cryptoName;
+    }
+
+    public String getCryptoSymbol() {
+        return cryptoSymbol;
     }
 
     public BigDecimal getTotalQuantity() {
