@@ -140,42 +140,61 @@ GROUP BY
 ORDER BY
     ct.user_id;
 
-CREATE OR REPLACE VIEW v_wallet AS
-SELECT
-    u.id AS user_id,
-    u.name,
-    COALESCE(f.total_funds_amount, 0) AS total_funds_amount,
-    COALESCE(s.total_sales_amount, 0) AS total_sales_amount
-FROM
-    users u
-        LEFT JOIN v_users_total_fund f ON u.id = f.user_id
-        LEFT JOIN v_users_total_sales s ON u.id = s.user_id
-ORDER BY
-    u.id;
 
-
+DROP VIEW v_users_total_buys;
+CREATE OR REPLACE VIEW v_users_total_buys AS
 SELECT
     ct.user_id,
-    u.name AS user_name,
-    c.name AS crypto_name,
-    c.symbol AS crypto_symbol,
-    SUM(
-            CASE
-                WHEN ct.transaction_type_id = (SELECT id FROM transaction_types WHERE name = 'BUY') THEN ct.quantity
-                WHEN ct.transaction_type_id = (SELECT id FROM transaction_types WHERE name = 'SELL') THEN -ct.quantity
-                ELSE 0
-                END
-    ) AS total_quantity
+    SUM(ct.total_amount) AS total_buys_amount
 FROM
     crypto_transactions ct
         JOIN
     users u ON ct.user_id = u.id
         JOIN
-    cryptocurrencies c ON ct.cryptocurrency_id = c.id
+    transaction_types tt ON ct.transaction_type_id = tt.id
+WHERE
+    tt.name = 'BUY'
 GROUP BY
-    ct.user_id, u.name, c.name, c.symbol
+    ct.user_id
 ORDER BY
-    ct.user_id, c.name;
+    ct.user_id;
+
+DROP VIEW v_wallet;
+CREATE OR REPLACE VIEW v_wallet AS
+SELECT
+    u.id AS user_id,
+    u.name,
+    COALESCE(f.total_funds_amount, 0) AS total_funds_amount,
+    COALESCE(s.total_sales_amount, 0) AS total_sales_amount,
+    COALESCE(b.total_buys_amount, 0) AS total_buys_amount
+FROM
+    users u
+        LEFT JOIN v_users_total_fund f ON u.id = f.user_id
+        LEFT JOIN v_users_total_sales s ON u.id = s.user_id
+        LEFT JOIN v_users_total_buys b on u.id = b.user_id
+ORDER BY
+    u.id;
+
+
+CREATE OR REPLACE VIEW v_users_crypto_quantity AS
+SELECT
+    u.id AS user_id,
+    c.id AS crypto_id,
+    COALESCE(SUM(
+         CASE
+             WHEN ct.transaction_type_id = (SELECT id FROM transaction_types WHERE name = 'BUY') THEN ct.quantity
+             WHEN ct.transaction_type_id = (SELECT id FROM transaction_types WHERE name = 'SELL') THEN -ct.quantity
+             ELSE 0
+             END
+     ), 0) AS total_quantity
+FROM
+    users u
+        CROSS JOIN cryptocurrencies c -- assure tous les combinaisons user/crypto
+        LEFT JOIN crypto_transactions ct ON ct.user_id = u.id AND ct.cryptocurrency_id = c.id
+GROUP BY
+    u.id, c.id
+ORDER BY
+    u.id, c.id;
 
 -- ================================================
 -- Triggers

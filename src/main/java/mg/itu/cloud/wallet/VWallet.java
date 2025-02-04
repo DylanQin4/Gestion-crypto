@@ -27,6 +27,9 @@ public class VWallet {
     @Column(name = "total_sales_amount")
     private BigDecimal totalSalesAmount;
 
+    @Column(name = "total_buys_amount")
+    private BigDecimal totalBuysAmount;
+
     public Integer getUserId() {
         return userId;
     }
@@ -43,8 +46,8 @@ public class VWallet {
         return totalSalesAmount;
     }
 
-    public BigDecimal getFundBalance() {
-        return totalFundsAmount.add(totalSalesAmount);
+    public BigDecimal getTotalBuysAmount() {
+        return totalBuysAmount;
     }
 
     protected VWallet() {
