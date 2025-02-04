@@ -60,9 +60,9 @@ VALUES
 
 INSERT INTO crypto_transactions (user_id, transaction_type_id, cryptocurrency_id, quantity, price_unit, total_amount, transaction_date)
 VALUES
-    (1, 4, 3, 0.05, 40000.00, 200.00, '2025-01-05 14:00:00'), -- Dylan achète 0.05 BTC à 40 000$
-    (2, 4, 4, 2.0, 2500.00, 500.00, '2025-01-06 15:30:00'),    -- Bob achète 2 ETH à 2 500$
-    (3, 4, 5, 0.02, 42000.00, 80.00, '2025-01-07 16:45:00');    -- Claire vend 0.02 BTC à 42 000$
+    (1, 4, 3, 0.05, 40000.00, 200.00, '2025-01-08 14:00:00'), -- Dylan achète 0.05 BTC à 40 000$
+    (2, 4, 4, 2.0, 2500.00, 500.00, '2025-01-08 15:30:00'),    -- Bob achète 2 ETH à 2 500$
+    (3, 4, 5, 0.02, 42000.00, 80.00, '2025-01-10 16:45:00');    -- Claire vend 0.02 BTC à 42 000$
 
 
 
