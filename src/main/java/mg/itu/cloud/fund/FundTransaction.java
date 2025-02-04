@@ -19,9 +19,8 @@ public class FundTransaction {
     private Integer id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -44,15 +43,17 @@ public class FundTransaction {
     public FundTransaction() {
     }
 
-    public FundTransaction(User user, TransactionType transactionType, BigDecimal amount) {
-        this.user = user;
+    public FundTransaction(Integer userId, TransactionType transactionType, String status, BigDecimal amount, Instant transactionDate) {
+        this.userId = userId;
         this.transactionType = transactionType;
+        this.status = status;
         this.amount = amount;
+        this.transactionDate = transactionDate;
     }
 
-    public FundTransaction(Integer id, User user, TransactionType transactionType, String status, BigDecimal amount, Instant transactionDate) {
+    public FundTransaction(Integer id, Integer userId, TransactionType transactionType, String status, BigDecimal amount, Instant transactionDate) {
         this.id = id;
-        this.user = user;
+        this.userId = userId;
         this.transactionType = transactionType;
         this.status = status;
         this.amount = amount;
@@ -67,12 +68,12 @@ public class FundTransaction {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public TransactionType getTransactionType() {

@@ -9,16 +9,16 @@
     <div class="max-w-4xl mx-auto space-y-8">
         <h1 class="text-3xl font-bold text-center">Gestion des fonds</h1>
 
-    @if(message != null)
-        <div class="alert alert-success p-4 rounded bg-green-100 text-green-800">
-            ${message}
-        </div>
+        @if(message != null)
+            <div class="alert alert-success p-4 rounded bg-green-100 text-green-800">
+                ${message}
+            </div>
         @endif
         @if(error != null)
             <div class="alert alert-danger p-4 rounded bg-red-100 text-red-800">
                 ${error}
             </div>
-            @endif
+        @endif
 
         <div class="grid gap-8 md:grid-cols-2">
             <div class="bg-white rounded-lg shadow-md p-6">

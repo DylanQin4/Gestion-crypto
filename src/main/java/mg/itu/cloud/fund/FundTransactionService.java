@@ -1,6 +1,7 @@
 package mg.itu.cloud.fund;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ public class FundTransactionService {
         if (deposit.isEmpty()) {
             throw new RuntimeException("Type de transaction 'DEPOSIT' non trouve");
         }
-        FundTransaction transaction = new FundTransaction(user.get(), deposit.get(), amount);
+        FundTransaction transaction = new FundTransaction(userId, deposit.get(), Status.PENDING.name(), amount, Instant.now());
         fundTransactionRepository.save(transaction);
     }
 
@@ -48,7 +49,11 @@ public class FundTransactionService {
         if (withdrawal.isEmpty()) {
             throw new RuntimeException("Type de transaction 'WITHDRAWAL' non trouve");
         }
-        FundTransaction transaction = new FundTransaction(user.get(), withdrawal.get(), amount);
+        FundTransaction transaction = new FundTransaction(userId, withdrawal.get(), Status.PENDING.name(), amount, Instant.now());
+        fundTransactionRepository.save(transaction);
+    }
+
+    public void createFundTransaction(FundTransaction transaction) {
         fundTransactionRepository.save(transaction);
     }
 }

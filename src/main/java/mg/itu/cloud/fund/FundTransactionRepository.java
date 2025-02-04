@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface FundTransactionRepository extends JpaRepository<FundTransaction, Integer> {
-    @Query("SELECT ft FROM FundTransaction ft WHERE ft.user.id = :userId ORDER BY ft.transactionDate DESC")
+    @Query("SELECT ft FROM FundTransaction ft WHERE ft.userId = :userId ORDER BY ft.transactionDate DESC")
     List<FundTransaction> findByUserId(@Param("userId") Integer userId);
 } 
