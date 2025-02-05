@@ -1,9 +1,11 @@
 package mg.itu.cloud.Auth;
 
 import mg.itu.cloud.user.UserService;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
+@RequestMapping("/auth")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final UserService userService;
@@ -11,6 +13,16 @@ public class AuthenticationController {
     public AuthenticationController(AuthenticationService authenticationService, UserService userService) {
         this.authenticationService = authenticationService;
         this.userService = userService;
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "auth/login";
+    }
+
+    @GetMapping("/register")
+    public String register() {
+        return "auth/register";
     }
 
     @PostMapping("/login")

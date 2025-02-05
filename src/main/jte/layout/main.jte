@@ -19,7 +19,7 @@
 
         <!-- Main content -->
         <div class="pl-64 h-full">
-            <div class="p-6">
+            <div class="p-6">0
                 <!-- https://jte.gg/syntax/#content -->
                 ${content}
             </div>
