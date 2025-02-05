@@ -18,9 +18,19 @@ public class UserService {
         return repository.findById(id).orElse(null);
     }
 
+    @Transactional
     public User save(User user) {
+        if (user.getId() != null) {
+            Optional<User> existingUser = repository.findById(user.getId());
+            if (existingUser.isPresent()) {
+                if (!existingUser.get().getEmail().equals(user.getEmail())) {
+                    throw new UnsupportedOperationException("La modification de l'email n'est pas autorisée.");
+                }
+            }
+        }
         return repository.save(user);
     }
+    
 
     public boolean checkIfEmailExists(String email) {
         return repository.existsByEmail(email);
@@ -42,6 +52,7 @@ public class UserService {
         }
     }
 
+
     public User getUserInfo(Integer userId) {
         Optional<User> optionalUser = repository.findById(userId);
         if (optionalUser.isPresent()) {
@@ -57,15 +68,12 @@ public class UserService {
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
-            // Récupérer l'ancien rôle et le supprimer
-            user.getRoles().clear(); // Suppression de l'ancien rôle (il ne peut y en avoir qu'un seul)
-
-            // Récupérer le nouveau rôle
+            user.getRoles().clear(); 
             Optional<Role> optionalRole = roleRepository.findByName(newRoleName);
             if (optionalRole.isPresent()) {
                 Role newRole = optionalRole.get();
-                user.getRoles().add(newRole); // Ajouter le nouveau rôle
-                repository.save(user); // Sauvegarder l'utilisateur avec son nouveau rôle
+                user.getRoles().add(newRole);
+                repository.save(user);
                 return true;
             } else {
                 throw new IllegalArgumentException("Rôle non trouvé");
