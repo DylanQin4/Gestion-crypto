@@ -26,6 +26,10 @@ public class FundTransactionService {
     public List<FundTransaction> getFundTransactionHistory(Integer userId) {
         return fundTransactionRepository.findByUserId(userId);
     }
+       
+    public List<FundTransaction> getAllTransactions() {
+        return fundTransactionRepository.findAll();
+    }
 
     public void deposit(Integer userId, BigDecimal amount) {
         Optional<User> user = userRepository.findById(userId);
