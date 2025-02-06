@@ -1,7 +1,7 @@
 @param gg.jte.Content content
 
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="mytheme">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +19,7 @@
 
         <!-- Main content -->
         <div class="pl-64 h-full">
-            <div class="p-6">0
+            <div class="p-6">
                 <!-- https://jte.gg/syntax/#content -->
                 ${content}
             </div>

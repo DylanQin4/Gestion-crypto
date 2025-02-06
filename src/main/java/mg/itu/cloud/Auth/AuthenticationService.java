@@ -1,10 +1,7 @@
 package mg.itu.cloud.Auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import mg.itu.cloud.user.User;
-import mg.itu.cloud.user.Role;
-import mg.itu.cloud.user.Roles;
-import mg.itu.cloud.user.UserService;
+import mg.itu.cloud.user.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -21,10 +18,12 @@ import java.util.Set;
 public class AuthenticationService {
     private final CloseableHttpClient httpClient;
     private final UserService userService;
+    private final RoleService roleService;
 
-    public AuthenticationService(CloseableHttpClient httpClient, UserService userService) {
+    public AuthenticationService(CloseableHttpClient httpClient, UserService userService, RoleService roleService) {
         this.httpClient = httpClient;
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     public String authenticate(String email, String password) {
@@ -69,7 +68,8 @@ public class AuthenticationService {
             post.setHeader("Accept", "application/json");
             post.setHeader("Content-Type", "application/json");
 
-            newUser = userService.save(new User(email, nom, Set.of(new Role(Roles.USER.toString()))));
+            Role role = roleService.getRoleByName(Roles.USER.name());
+            newUser = userService.save(new User(nom, email, Set.of(role)));
 
             // Créer le corps de la requête (json)
             String json = String.format(
