@@ -26,6 +26,16 @@ public class TransactionController {
         return "pages/fund";
     }
 
+       
+    @GetMapping("/all")
+    public String afficherToutesLesTransactions(Model model) {
+        List<FundTransaction> transactions = fundTransactionService.getAllTransactions();
+        model.addAttribute("transactions", transactions);
+        model.addAttribute("message", "Historique des transactions récupéré avec succès !");
+        model.addAttribute("error", "Erreur lors de la récupération des transactions.");
+        return "pages/fund_all"; // afficher toutes les transactions
+    }
+
     @PostMapping("/deposit")
     public String deposer(@RequestParam BigDecimal amount, RedirectAttributes redirectAttributes) {
         Integer userId = 1;
