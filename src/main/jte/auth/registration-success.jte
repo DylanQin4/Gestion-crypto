@@ -15,8 +15,8 @@
                 📩 Une dernière étape est nécessaire : <br>
                 <span class="font-semibold">Vérifiez votre e-mail pour activer votre compte.</span>
             </p>
-            <a href="/" class="btn btn-success btn-sm w-20 text-white">
-                🏠 Aller à l'accueil
+            <a href="/auth/login" class="btn btn-success btn-sm w-20 text-white">
+                Se connecter
             </a>
         </div>
     </body>

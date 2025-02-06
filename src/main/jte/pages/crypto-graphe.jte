@@ -1,4 +1,7 @@
 @import mg.itu.cloud.crypto.Crypto
+@import mg.itu.cloud.user.User
+
+@param User user
 
 @param Crypto crypto
 @param Integer id
@@ -18,7 +21,7 @@
 <body class="bg-gray-100">
 <div class="min-h-screen">
     <!-- Navigation -->
-    @template.fragments.navbar()
+    @template.fragments.navbar(user = user)
 
     <!-- Sidebar -->
     @template.fragments.sidebar()

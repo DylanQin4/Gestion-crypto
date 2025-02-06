@@ -1,5 +1,8 @@
 @import mg.itu.cloud.crypto.Crypto
 @import java.util.List
+@import mg.itu.cloud.user.User
+
+@param User user
 
 @param List<Crypto> allCrypto
 @param String message
@@ -109,4 +112,4 @@
         });
     </script>
 
-`)
+`, user = user)

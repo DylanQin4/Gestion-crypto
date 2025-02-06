@@ -1,6 +1,7 @@
 package mg.itu.cloud.Auth;
 
 import jakarta.servlet.http.HttpSession;
+import mg.itu.cloud.user.User;
 import mg.itu.cloud.user.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,8 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password, HttpSession session, RedirectAttributes redirectAttributes) {
-        if (!userService.checkIfEmailExists(email)) {
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
             redirectAttributes.addFlashAttribute("error", "Vous n'êtes pas encore inscrit.");
             return "redirect:/auth/login?error=not_registered";
         }
@@ -37,10 +39,10 @@ public class AuthenticationController {
         String authResponse = authenticationService.authenticate(email, password);
         if (authResponse.contains("Erreur")) {
             redirectAttributes.addFlashAttribute("error", authResponse);
-            return "redirect:/login?error=auth_failed";
+            return "redirect:/auth/login?error=auth_failed";
         }
 
-        session.setAttribute("user", email);
+        session.setAttribute("user", user);
         return "redirect:/my-wallet";
     }
 

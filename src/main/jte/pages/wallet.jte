@@ -1,6 +1,8 @@
 @import mg.itu.cloud.wallet.WalletResponse
 @import mg.itu.cloud.wallet.VUsersCryptoQuantity
+@import mg.itu.cloud.user.User
 
+@param User user
 @param WalletResponse wallet
 
 @template.layout.main(content = @`
@@ -80,7 +82,7 @@ background: linear-gradient(328deg, rgba(0,224,214,1) 0%, rgba(163,0,247,1) 58%)
         // Appeler la fonction pour mettre à jour les prix au chargement de la page
         document.addEventListener('DOMContentLoaded', updateCryptoPrices);
 
-        // Optionnel : Mettre à jour les prix toutes les 30 secondes
-        setInterval(updateCryptoPrices, 30000);
+        // Optionnel : Mettre a jour les prix toutes les 10 secondes
+        setInterval(updateCryptoPrices, 10000);
     </script>
-`)
+`, user = user)

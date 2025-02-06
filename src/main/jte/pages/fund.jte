@@ -1,5 +1,8 @@
 @import mg.itu.cloud.fund.FundTransaction
 @import java.util.List
+@import mg.itu.cloud.user.User
+
+@param User user
 
 @param List<FundTransaction> transactions
 @param String message
@@ -90,4 +93,4 @@
             </table>
         </div>
     </div>
-`)
+`, user = user)
