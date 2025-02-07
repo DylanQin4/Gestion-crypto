@@ -64,4 +64,31 @@ public class TransactionController {
         }
         return "redirect:/fund-management";
     }
+
+    @GetMapping("/requests")
+    public String getAllRequests(Model model, @SessionAttribute(name = "user", required = false) User user) {
+        if (user == null || !user.isAdmin()) {
+            return "redirect:/fund-management";
+        }
+        List<FundTransaction> transactionsPending = fundTransactionService.getAllRequests();
+        model.addAttribute("transactions", transactionsPending);
+        return "admin/validate-fund";
+    }
+
+    @GetMapping("/requests/validate/{id}")
+    public String validateRequest(@PathVariable Integer id, RedirectAttributes redirectAttributes, @SessionAttribute(name = "user", required = false) User user) {
+        if (user == null || !user.isAdmin()) {
+            return "redirect:/fund-management";
+        }
+        try {
+            fundTransactionService.validateRequest(id);
+            redirectAttributes.addFlashAttribute("message", "Transaction validée avec succès.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Une erreur est survenue lors de la validation.");
+        }
+        return "redirect:/fund-management/requests";
+    }
+
 }

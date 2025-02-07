@@ -32,7 +32,8 @@ public class User {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+//    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -51,6 +52,10 @@ public class User {
         setName(name);
         setEmail(email);
         setRoles(roles);
+    }
+
+    public boolean isAdmin(){
+        return roles.stream().anyMatch(role -> role.getName().equals(Roles.ADMIN.name()));
     }
 
     public Integer getId() {

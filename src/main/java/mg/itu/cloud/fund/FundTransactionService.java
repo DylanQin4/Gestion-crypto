@@ -56,4 +56,17 @@ public class FundTransactionService {
     public void createFundTransaction(FundTransaction transaction) {
         fundTransactionRepository.save(transaction);
     }
+
+    public List<FundTransaction> getAllRequests() {
+        return fundTransactionRepository.findByStatus(Status.PENDING.name());
+    }
+
+    public void validateRequest(Integer id) {
+        Optional<FundTransaction> transaction = fundTransactionRepository.findById(id);
+        if (transaction.isEmpty()) {
+            throw new IllegalArgumentException("Transaction non trouvee");
+        }
+        transaction.get().setStatus(Status.VALIDATE.name());
+        fundTransactionRepository.save(transaction.get());
+    }
 }
