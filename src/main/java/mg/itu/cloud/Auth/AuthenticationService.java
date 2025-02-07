@@ -14,6 +14,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,16 +49,14 @@ public class AuthenticationService {
                 System.out.println("Response Body: " + responseString);
                 // Traiter la réponse (par exemple, récupérer un token)
                 if (response.getStatusLine().getStatusCode() == 200) {
-                    // Exemple d'extraction d'un token ou d'un message
-                    return responseString;
+                    return responseString;  // Renvoie le token ou la réponse
                 } else {
-                    // Gérer l'erreur
                     return "Erreur d'authentification: " + response.getStatusLine();
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            return "Erreur: " + e.getMessage();
+            return "Erreur d'authentification : " + e.getMessage();
         }
     }
 
@@ -69,6 +68,7 @@ public class AuthenticationService {
             post.setHeader("Accept", "application/json");
             post.setHeader("Content-Type", "application/json");
 
+            // Créer l'utilisateur local
             newUser = userService.save(new User(email, nom, Set.of(new Role(Roles.USER.toString()))));
 
             // Créer le corps de la requête (json)
@@ -87,19 +87,17 @@ public class AuthenticationService {
                 System.out.println("Response Status: " + response.getStatusLine());
                 System.out.println("Response Body: " + responseString);
 
-                // Traiter la réponse
-                if (response.getStatusLine().getStatusCode() == 201) { // 201 Created
-                    return responseString; // Succès
+                if (response.getStatusLine().getStatusCode() == 201) {
+                    return responseString;  // Succès
                 } else {
                     // Extraire le message d'erreur à partir du JSON
                     ObjectMapper objectMapper = new ObjectMapper();
                     Map<String, Object> responseMap = objectMapper.readValue(responseString, Map.class);
-                    Object message = responseMap.get("message");
 
-                    // Vérifier si le message contient des erreurs spécifiques
+                    // Gérer les erreurs spécifiques liées à l'email
                     if (responseMap.containsKey("message")) {
                         Map<String, String> messageMap = (Map<String, String>) responseMap.get("message");
-                        String emailError = messageMap.get("email"); // Obtenir le message pour l'email
+                        String emailError = messageMap.get("email");  // Message d'erreur pour l'email
                         throw new Exception("Erreur d'enregistrement: " + emailError);
                     }
 
@@ -107,10 +105,11 @@ public class AuthenticationService {
                 }
             }
         } catch (Exception e) {
+            // En cas d'erreur, supprimer l'utilisateur si nécessaire
             if (newUser != null) {
                 userService.delete(newUser);
             }
-            return e.getMessage();
+            return "Erreur : " + e.getMessage();
         }
     }
 
@@ -132,14 +131,12 @@ public class AuthenticationService {
                 System.out.println("Response Body: " + responseString);
 
                 if (response.getStatusLine().getStatusCode() == 200) {
-                    // Retourner un message de succès ou extraire les données du corps de la réponse
                     return "Validation réussie : " + responseString;
                 } else {
-                    // Gérer les erreurs
                     return "Erreur de validation : " + responseString;
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return "Erreur : " + e.getMessage();
         }

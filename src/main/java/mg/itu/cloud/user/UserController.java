@@ -1,14 +1,20 @@
 package mg.itu.cloud.user;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import jakarta.validation.Valid;
+import mg.itu.cloud.crypto.transactions.CryptoTransactionService;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
+      
     private final UserService userService;
-    public UserController(UserService userService) {
+    private final CryptoTransactionService cryptoTransactionService;
+
+    public UserController(CryptoTransactionService cryptoTransactionService, UserService userService) {
+        this.cryptoTransactionService = cryptoTransactionService;
         this.userService = userService;
     }
 
@@ -48,4 +54,5 @@ public class UserController {
     public boolean changeUserRole(@PathVariable Integer id, @RequestParam String newRoleName) {
         return userService.changeUserRole(id, newRoleName);
     }
+
 }

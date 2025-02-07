@@ -2,12 +2,13 @@ package mg.itu.cloud.crypto.transactions;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import mg.itu.cloud.crypto.Crypto;
 import mg.itu.cloud.fund.TransactionType;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "crypto_transactions")
@@ -124,5 +125,13 @@ public class CryptoTransaction {
     public void setTransactionDate(Instant transactionDate) {
         this.transactionDate = transactionDate;
     }
+  public String getFormattedDate() {
+        if (transactionDate != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return transactionDate.atZone(ZoneId.systemDefault()).format(formatter);
+        }
+        return null;
+    }
+
 
 }

@@ -196,6 +196,57 @@ GROUP BY
 ORDER BY
     u.id, c.id;
 
+CREATE VIEW user_crypto_transactions AS
+SELECT 
+    u.id AS user_id,
+    u.name AS user_name,
+    u.email AS user_email,
+    c.name AS cryptocurrency_name,
+    c.symbol AS cryptocurrency_symbol,
+    ct.transaction_type_id,
+    tt.name AS transaction_type,
+    ct.quantity,
+    ct.price_unit,
+    ct.total_amount,
+    ct.transaction_date
+FROM 
+    users u
+JOIN 
+    crypto_transactions ct ON u.id = ct.user_id
+JOIN 
+    cryptocurrencies c ON ct.cryptocurrency_id = c.id
+JOIN 
+    transaction_types tt ON ct.transaction_type_id = tt.id
+ORDER BY 
+    u.id, ct.transaction_date;
+
+CREATE VIEW user_crypto_transactions AS
+SELECT 
+    u.id AS user_id,
+    u.name AS user_name,
+    u.email AS user_email,
+    c.name AS cryptocurrency_name,
+    c.symbol AS cryptocurrency_symbol,
+    ct.transaction_type_id,
+    tt.name AS transaction_type,
+    ct.quantity,
+    ct.price_unit,
+    ct.total_amount,
+    ct.transaction_date
+FROM 
+    users u
+JOIN 
+    crypto_transactions ct ON u.id = ct.user_id
+JOIN 
+    cryptocurrencies c ON ct.cryptocurrency_id = c.id
+JOIN 
+    transaction_types tt ON ct.transaction_type_id = tt.id
+WHERE 
+    tt.name IN ('BUY', 'SELL')
+ORDER BY 
+    u.id, ct.transaction_date;
+
+
 -- ================================================
 -- Triggers
 -- ================================================

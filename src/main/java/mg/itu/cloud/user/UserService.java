@@ -2,10 +2,13 @@ package mg.itu.cloud.user;
 
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
+
     private final UserRepository repository;
     private final RoleRepository roleRepository;
 
@@ -30,7 +33,6 @@ public class UserService {
         }
         return repository.save(user);
     }
-    
 
     public boolean checkIfEmailExists(String email) {
         return repository.existsByEmail(email);
@@ -42,44 +44,37 @@ public class UserService {
 
     @Transactional
     public User updateName(Integer userId, String newName) {
-        Optional<User> optionalUser = repository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            user.setName(newName);
-            return repository.save(user);
-        } else {
-            throw new IllegalArgumentException("Utilisateur non trouvé");
-        }
+        return repository.findById(userId)
+                .map(user -> {
+                    user.setName(newName);
+                    return repository.save(user);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
     }
 
-
     public User getUserInfo(Integer userId) {
-        Optional<User> optionalUser = repository.findById(userId);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
-            throw new IllegalArgumentException("Utilisateur non trouvé");
-        }
+        return repository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
     }
 
     @Transactional
     public boolean changeUserRole(Integer userId, String newRoleName) {
-        Optional<User> optionalUser = repository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
+        User user = repository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
 
-            user.getRoles().clear(); 
-            Optional<Role> optionalRole = roleRepository.findByName(newRoleName);
-            if (optionalRole.isPresent()) {
-                Role newRole = optionalRole.get();
-                user.getRoles().add(newRole);
-                repository.save(user);
-                return true;
-            } else {
-                throw new IllegalArgumentException("Rôle non trouvé");
-            }
-        } else {
-            throw new IllegalArgumentException("Utilisateur non trouvé");
+        Optional<Role> optionalRole = roleRepository.findByName(newRoleName);
+        if (!optionalRole.isPresent()) {
+            throw new IllegalArgumentException("Rôle non trouvé");
         }
+
+        Role newRole = optionalRole.get();
+        user.getRoles().clear(); 
+        user.getRoles().add(newRole);  // Ajouter le nouveau rôle
+        repository.save(user); // Sauvegarder les modifications
+        return true;
+    }
+
+    public List<User> getAllUsers() {
+        return repository.findAll();
     }
 }

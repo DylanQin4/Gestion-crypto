@@ -3,7 +3,6 @@ package mg.itu.cloud.crypto.transactions;
 import mg.itu.cloud.crypto.PriceHistory;
 import mg.itu.cloud.crypto.PriceHistoryService;
 import mg.itu.cloud.fund.*;
-import mg.itu.cloud.user.User;
 import mg.itu.cloud.user.UserService;
 import mg.itu.cloud.wallet.VUsersCryptoQuantityService;
 import mg.itu.cloud.wallet.VWallet;
@@ -147,4 +146,7 @@ public class CryptoTransactionService {
     public void createCryptoTransaction(CryptoTransaction cryptoTransaction) {
         cryptoTransactionRepository.save(cryptoTransaction);
     }
+
+ 
+ 
 }
