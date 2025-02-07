@@ -56,6 +56,30 @@ public class FundTransactionService {
         FundTransaction transaction = new FundTransaction(userId, withdrawal.get(), Status.PENDING.name(), amount, Instant.now());
         fundTransactionRepository.save(transaction);
     }
+        public void buy(Integer userId, BigDecimal amount) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("Utilisateur non trouve");
+        }
+        Optional<TransactionType> buy = transactionTypeRepository.findByName(Type.BUY.name());
+        if (buy.isEmpty()) {
+            throw new RuntimeException("Type de transaction 'BUY' non trouve");
+        }
+        FundTransaction transaction = new FundTransaction(userId, buy.get(), Status.PENDING.name(), amount, Instant.now());
+        fundTransactionRepository.save(transaction);
+    }
+    public void sell(Integer userId, BigDecimal amount) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("Utilisateur non trouve");
+        }
+        Optional<TransactionType> sell = transactionTypeRepository.findByName(Type.SELL.name());
+        if (sell.isEmpty()) {
+            throw new RuntimeException("Type de transaction 'SELL' non trouve");
+        }
+        FundTransaction transaction = new FundTransaction(userId, sell.get(), Status.PENDING.name(), amount, Instant.now());
+        fundTransactionRepository.save(transaction);
+    }
 
     public void createFundTransaction(FundTransaction transaction) {
         fundTransactionRepository.save(transaction);
