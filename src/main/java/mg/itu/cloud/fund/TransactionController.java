@@ -63,4 +63,30 @@ public class TransactionController {
         }
         return "redirect:/fund-management";
     }
+        @PostMapping("/buy")
+    public String acheter(@RequestParam BigDecimal amount, RedirectAttributes redirectAttributes) {
+        Integer userId = 1;
+        try {
+            fundTransactionService.buy(userId, amount);
+            redirectAttributes.addFlashAttribute("message", "achat.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Une erreur d'achat.");
+        }
+        return "redirect:/fund-management";
+    }
+    @PostMapping("/sell")
+    public String vendre(@RequestParam BigDecimal amount, RedirectAttributes redirectAttributes) {
+        Integer userId = 1;
+        try {
+            fundTransactionService.sell(userId, amount);
+            redirectAttributes.addFlashAttribute("message", "vente");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Une erreur de vente.");
+        }
+        return "redirect:/fund-management";
+    }
 }
