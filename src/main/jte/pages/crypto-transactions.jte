@@ -53,8 +53,8 @@
 
                 <!-- Bouton de validation -->
                 <div class="flex gap-1">
-                    <button type="submit" class="btn btn-success w-1/2" onclick="setTransactionType('buy')">Acheter</button>
-                    <button type="submit" class="btn btn-error w-1/2" onclick="setTransactionType('sell')">Vendre</button>
+                    <button type="submit" class="btn btn-success w-1/2 text-white" onclick="setTransactionType('buy')">Acheter</button>
+                    <button type="submit" class="btn btn-outline btn-error w-1/2" onclick="setTransactionType('sell')">Vendre</button>
                 </div>
             </form>
         </div>

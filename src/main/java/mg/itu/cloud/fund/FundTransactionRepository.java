@@ -11,4 +11,7 @@ import java.util.List;
 public interface FundTransactionRepository extends JpaRepository<FundTransaction, Integer> {
     @Query("SELECT ft FROM FundTransaction ft WHERE ft.userId = :userId ORDER BY ft.transactionDate DESC")
     List<FundTransaction> findByUserId(@Param("userId") Integer userId);
-} 
+
+    @Query("SELECT ft FROM FundTransaction ft WHERE ft.status = :name")
+    List<FundTransaction> findByStatus(String name);
+}

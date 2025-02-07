@@ -17,7 +17,7 @@
             @template.fragments.navbar(user = user)
 
             <!-- Sidebar -->
-            @template.fragments.sidebar()
+            @template.fragments.sidebar(user = user)
 
             <!-- Main content -->
             <div class="pl-64 h-full">
