@@ -46,6 +46,7 @@
                         <td class="px-4 py-2 border">${transaction.getStatus()}</td>
                         <td class="px-4 py-2 border">
                             <a href="/fund-management/requests/validate/${transaction.getId()}" class="btn btn-primary">Valider</a>
+                            <a href="/fund-management/requests/invalidate/${transaction.getId()}" class="btn btn-outline btn-error">Supprimer</a>
                         </td>
                     </tr>
                 @endfor

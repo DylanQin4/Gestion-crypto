@@ -91,4 +91,20 @@ public class TransactionController {
         return "redirect:/fund-management/requests";
     }
 
+    @GetMapping("/requests/invalidate/{id}")
+    public String invalidateRequest(@PathVariable Integer id, RedirectAttributes redirectAttributes, @SessionAttribute(name = "user", required = false) User user) {
+        if (user == null || !user.isAdmin()) {
+            return "redirect:/fund-management";
+        }
+        try {
+            fundTransactionService.invalidateRequest(id);
+            redirectAttributes.addFlashAttribute("message", "Transaction invalidée avec succès.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Une erreur est survenue lors de l'invalidation.");
+        }
+        return "redirect:/fund-management/requests";
+    }
+
 }
