@@ -1,58 +1,39 @@
 package mg.itu.cloud.user;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import jakarta.validation.Valid;
-import mg.itu.cloud.crypto.transactions.CryptoTransactionService;
-
-@RestController
-@RequestMapping("/api/users")
+@Controller
+@RequestMapping("/user")
 public class UserController {
-      
-    private final UserService userService;
-    private final CryptoTransactionService cryptoTransactionService;
 
-    public UserController(CryptoTransactionService cryptoTransactionService, UserService userService) {
-        this.cryptoTransactionService = cryptoTransactionService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    @PostMapping("/update")
+    public String updateUserProfile(@RequestParam Integer id, @RequestParam String name, Model model) {
+        try {
+            userService.updateName(id, name);
+            model.addAttribute("successMessage", "Profile updated successfully!");
+            model.addAttribute("user", userService.getUserById(id));
+            return "pages/profile";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", "Error updating profile.");
+            return "redirect:/error";
+        }
+    }
+    
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Integer id) {
+    public String getUserProfile(@PathVariable Integer id, Model model) {
         User user = userService.getUserById(id);
-        if (user != null) {
-            return user;
-        } else {
-            throw new IllegalArgumentException("Utilisateur non trouvé");
+        if (user == null) {
+            return "redirect:/error";
         }
+        model.addAttribute("user", user);
+        return "pages/profile";
     }
-
-    @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
-        if (userService.checkIfEmailExists(user.getEmail())) {
-            throw new IllegalArgumentException("L'email est déjà utilisé");
-        }
-        return userService.save(user);
-    }
-
-    @GetMapping("/check-email")
-    public boolean checkEmailExists(@RequestParam String email) {
-        return userService.checkIfEmailExists(email);
-    }
-    @PutMapping("/{id}/name")
-    public User updateUserName(@PathVariable Integer id, @RequestParam String newName) {
-        return userService.updateName(id, newName);
-    }
-
-    @GetMapping("/{id}/info")
-    public User getUserInfo(@PathVariable Integer id) {
-        return userService.getUserInfo(id);
-    }
-
-    @PutMapping("/{id}/role")
-    public boolean changeUserRole(@PathVariable Integer id, @RequestParam String newRoleName) {
-        return userService.changeUserRole(id, newRoleName);
-    }
-
 }

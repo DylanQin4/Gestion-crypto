@@ -57,23 +57,6 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
     }
 
-    @Transactional
-    public boolean changeUserRole(Integer userId, String newRoleName) {
-        User user = repository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
-
-        Optional<Role> optionalRole = roleRepository.findByName(newRoleName);
-        if (!optionalRole.isPresent()) {
-            throw new IllegalArgumentException("Rôle non trouvé");
-        }
-
-        Role newRole = optionalRole.get();
-        user.getRoles().clear(); 
-        user.getRoles().add(newRole); 
-        repository.save(user); 
-        return true;
-    }
-
     public List<User> getAllUsers() {
         return repository.findAll();
     }
