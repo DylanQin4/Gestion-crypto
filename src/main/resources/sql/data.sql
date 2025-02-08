@@ -1,30 +1,29 @@
-INSERT INTO roles (name) VALUES 
-('Admin'),
-('User'),
-('Trader');
+INSERT INTO cryptocurrencies (name, symbol, image_url)
+VALUES
+    ('Bitcoin', 'BTC', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/z19safuqt2lvqwvqupsv.png'),
+    ('Ethereum', 'ETH', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/gqyc3sk4erefol7dmyej.png'),
+    ('Binance Coin', 'BNB', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/vaer6thjlacci4psr5hi.png'),
+    ('Cardano', 'ADA', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/rrkyf6msunmmorn926tx.png'),
+    ('Solana', 'SOL', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/ralsmzrefxxr5qx9kkeq.png'),
+    ('Ripple', 'XRP', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/whobt79xxxtvws5aozlh.png'),
+    ('Dogecoin', 'DOGE', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/rcu3exkrfkrxntbmwpxt.png'),
+    ('Polkadot', 'DOT', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/wmzfvzq0qybwlb1llhoi.png'),
+    ('Litecoin', 'LTC', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/tckgwa5muhiwjk45iep4.png'),
+    ('Chainlink', 'LINK', 'https://res.cloudinary.com/dszwvr77q/image/upload/v1738999451/crypto/gllxbuemb9iougag2nxx.png');
 
-INSERT INTO users (name, email) VALUES 
-('Alice Dupont', 'alicedupont@gmail.com'),
-('Bob Martin', 'bobmartin@gmail.com'),
-('Charlie Durand', 'charliedurand@gmail.com');
+INSERT INTO transaction_types (name) VALUES
+                                         ('DEPOSIT'),
+                                         ('WITHDRAWAL'),
+                                         ('BUY'),
+                                         ('SELL');
 
-INSERT INTO user_roles (user_id, role_id) VALUES 
-(1, 1), -- Alice est Admin
-(2, 2), -- Bob est User
-(3, 3); -- Charlie est Trader
+INSERT INTO roles (name) VALUES
+                             ('ADMIN'),
+                             ('USER');
 
+INSERT INTO users (name, email)
+VALUES ('Admin', 'email-temp@exemple.com');
 
-
-INSERT INTO cryptocurrencies (name, symbol, unit_price) VALUES 
-('Bitcoin', 'BTC', 45000.12345678),
-('Ethereum', 'ETH', 3000.98765432),
-('Binance Coin', 'BNB', 400.56789012),
-('Cardano', 'ADA', 1.23456789),
-('Solana', 'SOL', 150.87654321),
-('Ripple', 'XRP', 0.56789012),
-('Dogecoin', 'DOGE', 0.09876543),
-('Polkadot', 'DOT', 25.45678901),
-('Litecoin', 'LTC', 180.34567890),
-('Chainlink', 'LINK', 15.67890123);
-
-
+INSERT INTO user_roles (user_id, role_id)
+VALUES (1, 1),
+       (1, 2);

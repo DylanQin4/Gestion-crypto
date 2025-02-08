@@ -1,5 +1,8 @@
 @import mg.itu.cloud.crypto.Crypto
 @import java.util.List
+@import mg.itu.cloud.user.User
+
+@param User user
 
 @param List<Crypto> allCrypto
 
@@ -13,6 +16,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Logo</th>
                         <th>Symbol</th>
                         <th>Nom</th>
                         <th>Prix</th>
@@ -24,6 +28,7 @@
                     @for(Crypto crypto : allCrypto)
                         <tr>
                             <td class="hidden">${crypto.getId()}</td>
+                            <td><img src="${crypto.getImageUrl()}" alt="${crypto.getName()}" class="w-auto h-8"></td>
                             <td>${crypto.getSymbol()}</td>
                             <td>${crypto.getName()}</td>
                             <td id="price-${crypto.getId()}"></td>
@@ -69,4 +74,5 @@
     });
 </script>
 
-`)
+
+`, user = user)

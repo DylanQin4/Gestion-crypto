@@ -1,5 +1,6 @@
 package mg.itu.cloud.crypto;
 
+import mg.itu.cloud.sync.FirestoreService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,11 +16,13 @@ public class PriceHistoryService {
 
     private final PriceHistoryRepository priceHistoryRepository;
     private final CryptoRepository cryptoRepository;
+    private final FirestoreService firestoreService;
     private final Random random = new Random();
 
-    public PriceHistoryService(PriceHistoryRepository priceHistoryRepository, CryptoRepository cryptoRepository) {
+    public PriceHistoryService(PriceHistoryRepository priceHistoryRepository, CryptoRepository cryptoRepository, FirestoreService firestoreService) {
         this.priceHistoryRepository = priceHistoryRepository;
         this.cryptoRepository = cryptoRepository;
+        this.firestoreService = firestoreService;
     }
 
     public List<PriceHistory> getAllPricesForCrypto(Integer cryptoId) {
@@ -39,7 +42,7 @@ public class PriceHistoryService {
                 "low", priceHistory.getLow(),
                 "close", priceHistory.getClose(),
                 "change", priceHistory.getChange(),
-                "recordDate", priceHistory.getRecordDate()
+                "recordDate", priceHistory.getRecordDate().toString()
         );
     }
 
@@ -96,11 +99,14 @@ public class PriceHistoryService {
             price.setRecordDate(LocalDateTime.now());
 
             priceHistoryRepository.save(price);
+            firestoreService.sendData("priceHistory", convertPriceHistoryToMap(price));
         }
     }
 
     public PriceHistory getLastPriceBy(Integer cryptoId) {
-        return priceHistoryRepository.findLastPricesByCryptocurrencyId(cryptoId).orElse(null);
+        return priceHistoryRepository.findLastPricesByCryptocurrencyId(cryptoId)
+                .orElse(new PriceHistory(null, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO)
+        );
     }
 
     public Optional<PriceHistory> getNextPriceBy(Integer priceHistoryId, Integer cryptoId) {

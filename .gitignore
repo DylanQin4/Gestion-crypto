@@ -41,3 +41,6 @@ build/
 src/main/resources/application.properties
 ### JTE ###
 /jte-classes/
+
+# Firebase
+/src/main/resources/serviceAccountKey.json

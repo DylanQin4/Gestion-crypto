@@ -1,3 +1,7 @@
+@import mg.itu.cloud.user.User
+
+@param User user
+
 <aside id="default-sidebar" class="overlay sm:shadow-none overlay-open:translate-x-0 drawer drawer-start hidden max-w-64 sm:absolute sm:z-0 sm:flex sm:translate-x-0 pt-16" role="dialog" tabindex="-1" >
     <div class="drawer-body px-2 pt-4">
         <ul class="menu p-0">
@@ -21,6 +25,22 @@
                     Crypto
                 </a>
             </li>
+
+            <li>
+                <a href="/crypto/transactions">
+                    <img class="w-6 h-6" src="/icons/arrow-down-up.svg" />
+                    Acheter/Vendre
+                </a>
+            </li>
+
+            @if(user.isAdmin())
+                <li>
+                    <a href="/fund-management/requests">
+                        <img class="w-6 h-6" src="/icons/send.svg" />
+                        Demandes D/R
+                    </a>
+                </li>
+            @endif
         </ul>
     </div>
 </aside>
