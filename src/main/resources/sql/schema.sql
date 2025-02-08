@@ -26,6 +26,7 @@ CREATE TABLE cryptocurrencies (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE cryptocurrencies ADD COLUMN IF NOT EXISTS image_url VARCHAR(255);
 
 -- Table des types de transactions
 CREATE TABLE transaction_types (
