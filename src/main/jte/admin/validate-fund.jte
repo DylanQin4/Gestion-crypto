@@ -15,7 +15,7 @@
         <div class="bg-white rounded-lg shadow-md p-6">
             <div class="flex flex-col space-y-2">
                 <h2 class="text-xl font-semibold">Demandes de dépôt et de retrait</h2>
-                <p class="text-gray-500">Vos récentes demandes de dépôt et de retrait</p>
+                <p class="text-gray-500">Les récentes demandes de dépôt et de retrait</p>
                 @if(message != null)
                     <div class="alert alert-success p-4 rounded bg-green-100 text-green-800">
                         ${message}

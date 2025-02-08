@@ -20,3 +20,10 @@ INSERT INTO transaction_types (name) VALUES
 INSERT INTO roles (name) VALUES
                              ('ADMIN'),
                              ('USER');
+
+INSERT INTO users (name, email)
+VALUES ('Admin', 'email-temp@exemple.com');
+
+INSERT INTO user_roles (user_id, role_id)
+VALUES (1, 1),
+       (1, 2);

@@ -28,7 +28,7 @@
                     @for(Crypto crypto : allCrypto)
                         <tr>
                             <td class="hidden">${crypto.getId()}</td>
-                            <td><img src="${crypto.getImageUrl()}" alt="${crypto.getName()}" class="w-8 h-8"></td>
+                            <td><img src="${crypto.getImageUrl()}" alt="${crypto.getName()}" class="w-auto h-8"></td>
                             <td>${crypto.getSymbol()}</td>
                             <td>${crypto.getName()}</td>
                             <td id="price-${crypto.getId()}"></td>
