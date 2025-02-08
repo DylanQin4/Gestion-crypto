@@ -14,13 +14,10 @@ public class UserCryptoTransactionService {
 
     // Méthode pour récupérer les transactions de type "BUY" ou "SELL"
     public List<UserCryptoTransaction> getBuyAndSellTransactions() {
-        // Liste des types de transaction que vous voulez filtrer
         List<String> transactionTypes = Arrays.asList("BUY", "SELL");
-
-        // Récupérer les transactions de type "BUY" et "SELL"
         return repository.findByTransactionTypeIn(transactionTypes);
     }
-
+    
     public List<UserCryptoTransaction> getTransactionsByUserName(String userName) {
         return repository.findByUserName(userName);
     }

@@ -69,8 +69,8 @@ public class UserService {
 
         Role newRole = optionalRole.get();
         user.getRoles().clear(); 
-        user.getRoles().add(newRole);  // Ajouter le nouveau rôle
-        repository.save(user); // Sauvegarder les modifications
+        user.getRoles().add(newRole); 
+        repository.save(user); 
         return true;
     }
 

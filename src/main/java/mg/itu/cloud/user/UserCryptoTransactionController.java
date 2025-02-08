@@ -16,17 +16,10 @@ public class UserCryptoTransactionController {
     // Endpoint pour afficher les transactions de type "BUY" et "SELL"
     @GetMapping("/user-crypto-transactions")
     public String showUserCryptoTransactions(Model model) {
-        // Récupérer les transactions de type "BUY" et "SELL"
         List<UserCryptoTransaction> transactions = service.getBuyAndSellTransactions();
-
-        // Ajouter la liste des transactions au modèle pour l'affichage
         model.addAttribute("transactions", transactions);
-
-        // Ajouter un message de succès ou d'erreur
         model.addAttribute("message", "Affichage des transactions réussi.");
         model.addAttribute("error", null);
-
-        // Retourner le nom de la page JTE
         return "pages/userTransactions"; 
     }
 }
