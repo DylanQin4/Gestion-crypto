@@ -1,3 +1,4 @@
+
 package mg.itu.cloud.user;
 
 import jakarta.persistence.*;

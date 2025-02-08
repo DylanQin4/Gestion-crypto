@@ -11,13 +11,14 @@ public class TransactionType {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_types_id_gen")
     @SequenceGenerator(name = "transaction_types_id_gen", sequenceName = "transaction_types_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    public Integer id;
 
     @Size(max = 20)
     @NotNull
     @Column(name = "name", nullable = false, length = 20)
-    private String name;
+    public String name;
 
+    // Getters et Setters
     public Integer getId() {
         return id;
     }
@@ -33,5 +34,4 @@ public class TransactionType {
     public void setName(String name) {
         this.name = name;
     }
-
 }

@@ -3,7 +3,6 @@ package mg.itu.cloud.fund;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import mg.itu.cloud.user.User;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
