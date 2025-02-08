@@ -142,7 +142,7 @@ ORDER BY
     ct.user_id;
 
 
-DROP VIEW v_users_total_buys;
+-- DROP VIEW v_users_total_buys;
 CREATE OR REPLACE VIEW v_users_total_buys AS
 SELECT
     ct.user_id,
@@ -160,7 +160,7 @@ GROUP BY
 ORDER BY
     ct.user_id;
 
-DROP VIEW v_wallet;
+-- DROP VIEW v_wallet;
 CREATE OR REPLACE VIEW v_wallet AS
 SELECT
     u.id AS user_id,
@@ -177,7 +177,7 @@ ORDER BY
     u.id;
 
 
-DROP VIEW v_users_crypto_quantity;
+-- DROP VIEW v_users_crypto_quantity;
 CREATE OR REPLACE VIEW v_users_crypto_quantity AS
 SELECT
     row_number() OVER () AS id,
@@ -202,8 +202,9 @@ ORDER BY
     u.id, c.id;
 
 
+-- DROP VIEW user_crypto_transactions;
 CREATE VIEW user_crypto_transactions AS
-SELECT 
+SELECT
     u.id AS user_id,
     u.name AS user_name,
     u.email AS user_email,
@@ -215,17 +216,17 @@ SELECT
     ct.price_unit,
     ct.total_amount,
     ct.transaction_date
-FROM 
+FROM
     users u
-JOIN 
+JOIN
     crypto_transactions ct ON u.id = ct.user_id
-JOIN 
+JOIN
     cryptocurrencies c ON ct.cryptocurrency_id = c.id
-JOIN 
+JOIN
     transaction_types tt ON ct.transaction_type_id = tt.id
-WHERE 
+WHERE
     tt.name IN ('BUY', 'SELL')
-ORDER BY 
+ORDER BY
     u.id, ct.transaction_date;
 
 

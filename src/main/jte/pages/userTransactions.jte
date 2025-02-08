@@ -1,5 +1,8 @@
 @import mg.itu.cloud.user.UserCryptoTransaction
 @import java.util.List
+@import mg.itu.cloud.user.User
+
+@param User user
 
 @param List<UserCryptoTransaction> transactions
 @param String message
@@ -55,4 +58,4 @@
             </table>
         </div>
     </div>
-`)
+`, user = user)
