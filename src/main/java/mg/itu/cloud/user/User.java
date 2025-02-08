@@ -13,7 +13,8 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
     @Id
-    @ColumnDefault("nextval('users_id_seq')")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_gen")
+    @SequenceGenerator(name = "users_id_gen", sequenceName = "users_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -31,7 +32,8 @@ public class User {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+//    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -50,6 +52,10 @@ public class User {
         setName(name);
         setEmail(email);
         setRoles(roles);
+    }
+
+    public boolean isAdmin(){
+        return roles.stream().anyMatch(role -> role.getName().equals(Roles.ADMIN.name()));
     }
 
     public Integer getId() {

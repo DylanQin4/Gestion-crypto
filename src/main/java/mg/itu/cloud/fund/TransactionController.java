@@ -1,5 +1,7 @@
 package mg.itu.cloud.fund;
 
+import jakarta.servlet.http.HttpSession;
+import mg.itu.cloud.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +19,11 @@ public class TransactionController {
     private FundTransactionService fundTransactionService;
 
     @GetMapping
-    public String afficherPageFonds(Model model) {
-        Integer userId = 1;
+    public String afficherPageFonds(Model model, @SessionAttribute(name = "user", required = false) User user) {
+        if (user == null) {
+            return "redirect:/auth/login";
+        }
+        Integer userId = user.getId();
 
         List<FundTransaction> transactions = fundTransactionService.getFundTransactionHistory(userId);
 
@@ -27,8 +32,11 @@ public class TransactionController {
     }
 
     @PostMapping("/deposit")
-    public String deposer(@RequestParam BigDecimal amount, RedirectAttributes redirectAttributes) {
-        Integer userId = 1;
+    public String deposer(@RequestParam BigDecimal amount, RedirectAttributes redirectAttributes, @SessionAttribute(name = "user", required = false) User user) {
+        if (user == null) {
+            return "redirect:/auth/login";
+        }
+        Integer userId = user.getId();
         try {
             fundTransactionService.deposit(userId, amount);
             redirectAttributes.addFlashAttribute("message", "Dépôt effectué avec succès.");
@@ -41,8 +49,11 @@ public class TransactionController {
     }
 
     @PostMapping("/withdraw")
-    public String retirer(@RequestParam BigDecimal amount, RedirectAttributes redirectAttributes) {
-        Integer userId = 1;
+    public String retirer(@RequestParam BigDecimal amount, RedirectAttributes redirectAttributes, @SessionAttribute(name = "user", required = false) User user) {
+        if (user == null) {
+            return "redirect:/auth/login";
+        }
+        Integer userId = user.getId();
         try {
             fundTransactionService.withdraw(userId, amount);
             redirectAttributes.addFlashAttribute("message", "Retrait effectué avec succès.");
@@ -53,4 +64,47 @@ public class TransactionController {
         }
         return "redirect:/fund-management";
     }
+
+    @GetMapping("/requests")
+    public String getAllRequests(Model model, @SessionAttribute(name = "user", required = false) User user) {
+        if (user == null || !user.isAdmin()) {
+            return "redirect:/fund-management";
+        }
+        List<FundTransaction> transactionsPending = fundTransactionService.getAllRequests();
+        model.addAttribute("transactions", transactionsPending);
+        return "admin/validate-fund";
+    }
+
+    @GetMapping("/requests/validate/{id}")
+    public String validateRequest(@PathVariable Integer id, RedirectAttributes redirectAttributes, @SessionAttribute(name = "user", required = false) User user) {
+        if (user == null || !user.isAdmin()) {
+            return "redirect:/fund-management";
+        }
+        try {
+            fundTransactionService.validateRequest(id);
+            redirectAttributes.addFlashAttribute("message", "Transaction validée avec succès.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Une erreur est survenue lors de la validation.");
+        }
+        return "redirect:/fund-management/requests";
+    }
+
+    @GetMapping("/requests/invalidate/{id}")
+    public String invalidateRequest(@PathVariable Integer id, RedirectAttributes redirectAttributes, @SessionAttribute(name = "user", required = false) User user) {
+        if (user == null || !user.isAdmin()) {
+            return "redirect:/fund-management";
+        }
+        try {
+            fundTransactionService.invalidateRequest(id);
+            redirectAttributes.addFlashAttribute("message", "Transaction invalidée avec succès.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Une erreur est survenue lors de l'invalidation.");
+        }
+        return "redirect:/fund-management/requests";
+    }
+
 }

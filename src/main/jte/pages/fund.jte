@@ -1,5 +1,8 @@
 @import mg.itu.cloud.fund.FundTransaction
 @import java.util.List
+@import mg.itu.cloud.user.User
+
+@param User user
 
 @param List<FundTransaction> transactions
 @param String message
@@ -31,10 +34,10 @@
                         <div>
                             <label for="deposit-amount" class="block text-sm font-medium text-gray-700">Montant</label>
                             <input name="amount" type="number" id="deposit-amount" placeholder="Entrer le montant"
-                                   class="mt-1 p-2 border rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                   class="mt-1 p-2 border rounded-md w-full input" />
                         </div>
                         <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                class="btn btn-success text-white">
                             Déposer
                         </button>
                     </div>
@@ -51,10 +54,10 @@
                         <div>
                             <label for="withdrawal-amount" class="block text-sm font-medium text-gray-700">Montant</label>
                             <input name="amount" type="number" id="withdrawal-amount" placeholder="Entrer le montant"
-                                   class="mt-1 p-2 border rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                   class="mt-1 p-2 border rounded-md w-full input" />
                         </div>
                         <button type="submit"
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                class="btn btn-outline btn-error">
                             Retirer
                         </button>
                     </div>
@@ -90,4 +93,4 @@
             </table>
         </div>
     </div>
-`)
+`, user = user)

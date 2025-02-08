@@ -26,6 +26,7 @@ CREATE TABLE cryptocurrencies (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE cryptocurrencies ADD COLUMN IF NOT EXISTS image_url VARCHAR(255);
 
 -- Table des types de transactions
 CREATE TABLE transaction_types (
@@ -55,7 +56,7 @@ CREATE TABLE crypto_transactions (
     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Table des snapshots pour stocker les soldes des utilisateurs a moment precis
+-- Table des snapshots pour stocker les soldes des utilisateurs a moment precis(repport)
 -- Pour eviter de parcourir toutes les transactions pour calculer le solde
 CREATE TABLE user_balance_snapshots (
     id SERIAL PRIMARY KEY,
@@ -176,10 +177,14 @@ ORDER BY
     u.id;
 
 
+DROP VIEW v_users_crypto_quantity;
 CREATE OR REPLACE VIEW v_users_crypto_quantity AS
 SELECT
+    row_number() OVER () AS id,
     u.id AS user_id,
     c.id AS crypto_id,
+    c.name AS crypto_name,
+    c.symbol AS crypto_symbol,
     COALESCE(SUM(
          CASE
              WHEN ct.transaction_type_id = (SELECT id FROM transaction_types WHERE name = 'BUY') THEN ct.quantity

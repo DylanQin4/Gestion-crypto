@@ -17,6 +17,9 @@ public class Crypto {
     @Column(nullable = false, unique = true, length = 10)
     private String symbol;
 
+    @Column(length = 256)
+    private String imageUrl;
+
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -29,9 +32,10 @@ public class Crypto {
 
     public Crypto() {}
 
-    public Crypto(String name, String symbol) {
+    public Crypto(String name, String symbol, String imageUrl) {
         this.name = name;
         this.symbol = symbol;
+        this.imageUrl = imageUrl;
     }
 
     public Integer getId() {
@@ -56,6 +60,14 @@ public class Crypto {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public LocalDateTime getCreatedAt() {

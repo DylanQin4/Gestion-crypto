@@ -69,11 +69,11 @@ public class CryptoTransaction {
         this.id = id;
     }
 
-    public Integer getUser() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUser(Integer userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -85,11 +85,11 @@ public class CryptoTransaction {
         this.transactionType = transactionType;
     }
 
-    public Integer getCryptocurrency() {
+    public Integer getCryptoId() {
         return cryptoId;
     }
 
-    public void setCryptocurrency(Integer cryptoId) {
+    public void setCryptoId(Integer cryptoId) {
         this.cryptoId = cryptoId;
     }
 

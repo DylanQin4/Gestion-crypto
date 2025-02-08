@@ -3,6 +3,7 @@ package mg.itu.cloud.crypto.transactions;
 import mg.itu.cloud.crypto.PriceHistory;
 import mg.itu.cloud.crypto.PriceHistoryService;
 import mg.itu.cloud.fund.*;
+import mg.itu.cloud.sync.FirestoreService;
 import mg.itu.cloud.user.User;
 import mg.itu.cloud.user.UserService;
 import mg.itu.cloud.wallet.VUsersCryptoQuantityService;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,6 +26,7 @@ public class CryptoTransactionService {
     private final UserService userService;
     private final FundTransactionService fundTransactionService;
     private final VUsersCryptoQuantityService vUsersCryptoQuantityService;
+    private final FirestoreService firestoreService;
 
     public CryptoTransactionService(
             CryptoTransactionRepository cryptoTransactionRepository,
@@ -32,7 +35,8 @@ public class CryptoTransactionService {
             TransactionTypeRepository transactionTypeRepository,
             UserService userService,
             FundTransactionService fundTransactionService,
-            VUsersCryptoQuantityService vUsersCryptoQuantityService
+            VUsersCryptoQuantityService vUsersCryptoQuantityService,
+            FirestoreService firestoreService
     ) {
         this.cryptoTransactionRepository = cryptoTransactionRepository;
         this.vWalletService = vWalletService;
@@ -41,6 +45,7 @@ public class CryptoTransactionService {
         this.userService = userService;
         this.fundTransactionService = fundTransactionService;
         this.vUsersCryptoQuantityService = vUsersCryptoQuantityService;
+        this.firestoreService = firestoreService;
     }
 
     @Transactional
@@ -143,8 +148,21 @@ public class CryptoTransactionService {
         }
     }
 
+    public Map<String, Object> convertCryptoTransactionToMap(CryptoTransaction cryptoTransaction) {
+        return Map.of(
+                "id", cryptoTransaction.getId(),
+                "userId", cryptoTransaction.getUserId(),
+                "transactionTypeId", cryptoTransaction.getTransactionType().getId(),
+                "cryptoId", cryptoTransaction.getCryptoId(),
+                "quantity", cryptoTransaction.getQuantity(),
+                "priceUnit", cryptoTransaction.getPriceUnit(),
+                "totalAmount", cryptoTransaction.getTotalAmount(),
+                "transactionDate", cryptoTransaction.getTransactionDate().toString()
+        );
+    }
 
     public void createCryptoTransaction(CryptoTransaction cryptoTransaction) {
         cryptoTransactionRepository.save(cryptoTransaction);
+        firestoreService.sendData("cryptoTransactions", convertCryptoTransactionToMap(cryptoTransaction));
     }
 }

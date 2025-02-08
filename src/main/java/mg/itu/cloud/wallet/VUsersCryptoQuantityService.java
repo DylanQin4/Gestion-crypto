@@ -3,6 +3,7 @@ package mg.itu.cloud.wallet;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +19,12 @@ public class VUsersCryptoQuantityService {
     }
 
     public List<VUsersCryptoQuantity> getAllUsersCrypto(Integer userId) {
-        return vUsersCryptoQuantityReposiitory.findByUserId(userId);
+        List<VUsersCryptoQuantity> vUsersCryptoQuantities = new ArrayList<>();
+        vUsersCryptoQuantityReposiitory.findByUserId(userId).forEach(vUsersCryptoQuantity -> {
+            if (vUsersCryptoQuantity.getTotalQuantity().compareTo(BigDecimal.ZERO) != 0) {
+                vUsersCryptoQuantities.add(vUsersCryptoQuantity);
+            }
+        });
+        return vUsersCryptoQuantities;
     }
 }
