@@ -72,7 +72,7 @@ public class DataInitializer {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Role '" + role.getName() + "' already exists in Firestore.");
+            System.out.println("Role '" + role.getName() + "' existe deja dans Firestore.");
         }
     }
 
@@ -96,7 +96,7 @@ public class DataInitializer {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Crypto '" + crypto.getName() + "' already exists in Firestore.");
+            System.out.println("Crypto '" + crypto.getName() + "' existe deja dans Firestore.");
         }
     }
 
@@ -117,7 +117,7 @@ public class DataInitializer {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Transaction type '" + transactionType.getName() + "' already exists in Firestore.");
+            System.out.println("Transaction type '" + transactionType.getName() + "' existe deja dans Firestore.");
         }
     }
 }
