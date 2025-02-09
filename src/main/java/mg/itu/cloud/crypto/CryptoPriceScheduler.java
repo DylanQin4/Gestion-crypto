@@ -2,6 +2,7 @@ package mg.itu.cloud.crypto;
 
 import mg.itu.cloud.Config.AppConstants;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 

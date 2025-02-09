@@ -1,14 +1,14 @@
 package mg.itu.cloud.crypto;
 
+import com.google.cloud.Timestamp;
 import mg.itu.cloud.sync.FirestoreService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.*;
 
 @Service
 public class PriceHistoryService {
@@ -33,16 +33,39 @@ public class PriceHistoryService {
         return priceHistories.stream().map(this::convertPriceHistoryToMap).toList();
     }
 
-    public Map<String, Object> convertPriceHistoryToMap(PriceHistory priceHistory) {
-        return Map.of(
-                "id", priceHistory.getId(),
-                "open", priceHistory.getOpen(),
-                "high", priceHistory.getHigh(),
-                "low", priceHistory.getLow(),
-                "close", priceHistory.getClose(),
-                "change", priceHistory.getChange(),
-                "recordDate", priceHistory.getRecordDate().toString()
+    public Map<String, Object> convertPriceHistoryToMapForFirebase(PriceHistory priceHistory) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", priceHistory.getId());
+        map.put("cryptoId", priceHistory.getCryptocurrencyId());
+        map.put("open", priceHistory.getOpen().doubleValue()); // Convert BigDecimal to Double
+        map.put("high", priceHistory.getHigh().doubleValue()); // Convert BigDecimal to Double
+        map.put("low", priceHistory.getLow().doubleValue()); // Convert BigDecimal to Double
+        map.put("close", priceHistory.getClose().doubleValue()); // Convert BigDecimal to Double
+        map.put("change", priceHistory.getChange().doubleValue()); // Convert BigDecimal to Double
+
+        // Convert LocalDateTime to Firestore Timestamp
+        LocalDateTime recordDate = priceHistory.getRecordDate();
+        Timestamp timestamp = Timestamp.ofTimeSecondsAndNanos(
+                recordDate.toEpochSecond(ZoneOffset.UTC), // Convert to seconds since epoch
+                recordDate.getNano() // Extract nanoseconds
         );
+        map.put("recordDate", timestamp);
+
+        return map;
+    }
+
+    public Map<String, Object> convertPriceHistoryToMap(PriceHistory priceHistory) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", priceHistory.getId());
+        map.put("cryptoId", priceHistory.getCryptocurrencyId());
+        map.put("open", priceHistory.getOpen());
+        map.put("high", priceHistory.getHigh());
+        map.put("low", priceHistory.getLow());
+        map.put("close", priceHistory.getClose());
+        map.put("change", priceHistory.getChange());
+        map.put("recordDate", priceHistory.getRecordDate().toString());
+
+        return map;
     }
 
     public void generatePrices() {
@@ -98,7 +121,7 @@ public class PriceHistoryService {
             price.setRecordDate(LocalDateTime.now());
 
             priceHistoryRepository.save(price);
-            firestoreService.sendData("priceHistory", convertPriceHistoryToMap(price));
+            firestoreService.sendData("priceHistory", convertPriceHistoryToMapForFirebase(price));
         }
     }
 

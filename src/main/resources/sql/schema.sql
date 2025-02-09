@@ -85,7 +85,10 @@ CREATE TABLE price_history (
     change NUMERIC(18, 8) NOT NULL,
     record_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+TRUNCATE TABLE price_history;
+ALTER SEQUENCE price_history_id_seq RESTART WITH 1;
 
+TRUNCATE TABLE fund_transactions;
 
 -- SELECT * FROM price_history WHERE cryptocurrency_id = 1 ORDER BY record_date DESC LIMIT 1;
 

@@ -33,11 +33,11 @@ public class FirestoreSyncService {
     @Scheduled(fixedRate = 15000)
     public void syncFirestoreToDatabase() {
         try {
-            // 1. Recuperer les nouvelles transactions de Firestore
+            // 1. Récupérer les nouvelles transactions de Firestore
             QuerySnapshot querySnapshot = firestoreService.firestore.collection("fundTransactions").get().get();
             List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
 
-            // 2. Inserer les nouvelles transactions dans la base de donnees locale
+            // 2. Insérer les nouvelles transactions dans la base de données locale
             for (DocumentSnapshot document : documents) {
                 if (!document.exists()) {
                     continue;
@@ -57,33 +57,44 @@ public class FirestoreSyncService {
                 } else if (dateObj instanceof String) {
                     String dateStr = (String) dateObj;
                     try {
-                        // On essaie d'abord de parser avec Instant.parse si la chaîne contient un indicateur de fuseau horaire (ex: "Z")
+                        // On essaie de parser avec Instant.parse si la chaîne contient un indicateur de fuseau horaire (ex: "Z")
                         transactionDate = Instant.parse(dateStr);
                     } catch (DateTimeParseException e) {
-                        // Sinon, on considere que la date est au format ISO_LOCAL_DATE_TIME (sans fuseau) et on le convertit en UTC
+                        // Sinon, on considère que la date est au format ISO_LOCAL_DATE_TIME (sans fuseau) et on le convertit en UTC
                         transactionDate = LocalDateTime.parse(dateStr).atZone(ZoneOffset.UTC).toInstant();
                     }
                 } else {
-                    throw new IllegalArgumentException("Type de transactionDate non supporte : " + (dateObj != null ? dateObj.getClass() : "null"));
+                    throw new IllegalArgumentException("Type de transactionDate non supporté : " + (dateObj != null ? dateObj.getClass() : "null"));
                 }
 
-                // Verifier si la transaction existe deja dans la base de donnees locale
+                // Vérifier si la transaction existe déjà dans la base de données locale
                 FundTransaction existingTransaction = fundTransactionService.getById(id);
                 if (existingTransaction == null) {
-                    // Creer une nouvelle transaction
+                    // Créer une nouvelle transaction dans la base locale
                     TransactionType transactionType = transactionTypeRepository.findById(transactionTypeId)
                             .orElseThrow(() -> new IllegalArgumentException("Type de transaction inconnu: " + transactionTypeId));
 
-                    FundTransaction newTransaction = new FundTransaction(id, userId, transactionType, status, amount, transactionDate);
+                    FundTransaction newTransaction = new FundTransaction(null, userId, transactionType, status, amount, transactionDate);
                     fundTransactionService.createFundTransaction(newTransaction);
+
+                    // Supprimer le document de Firestore pour "nettoyer" l'enregistrement
+                    firestoreService.firestore
+                            .collection("fundTransactions")
+                            .document(document.getId())
+                            .delete()
+                            .get();
                 }
             }
 
-            // 3. Pousser les transactions validees vers Firestore
+            // 3. Pousser les transactions validées vers Firestore
             List<FundTransaction> transactions = fundTransactionService.getAllFundTransactions();
             for (FundTransaction transaction : transactions) {
-                // Verifier si la transaction existe deja dans Firestore
-                QuerySnapshot qSnapshot = firestoreService.firestore.collection("fundTransactions").whereEqualTo("id", transaction.getId()).get().get();
+                // Vérifier si la transaction existe déjà dans Firestore
+                QuerySnapshot qSnapshot = firestoreService.firestore
+                        .collection("fundTransactions")
+                        .whereEqualTo("id", transaction.getId())
+                        .get()
+                        .get();
                 if (qSnapshot.isEmpty()) {
                     try {
                         // Pousser la transaction vers Firestore
@@ -92,8 +103,6 @@ public class FirestoreSyncService {
                     } catch (ApiException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    System.out.println("FundTransactionId '" + transaction.getId() + "' existe deja dans Firestore.");
                 }
             }
         } catch (ApiException | ExecutionException | InterruptedException e) {
