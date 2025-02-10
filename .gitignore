@@ -44,3 +44,5 @@ src/main/resources/application.properties
 
 # Firebase
 /src/main/resources/serviceAccountKey.json
+
+.~lock.todo-gestion_crypto.ods#
