@@ -3,6 +3,8 @@ package mg.itu.cloud.user;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -13,6 +15,10 @@ public class UserService {
     public UserService(UserRepository Repository, RoleRepository roleRepository) {
         this.repository = Repository;
         this.roleRepository = roleRepository;
+    }
+
+    public List<User> getAllUsers() {
+        return repository.findAll();
     }
 
     public User getUserById(Integer id) {
@@ -64,5 +70,14 @@ public class UserService {
         user.getRoles().add(optionalRole);
         repository.save(user);
         return true;
+    }
+
+    public Map<String, Object> convertUserToMap(User user) {
+        return Map.of(
+                "id", user.getId(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "roles", user.getRoles().stream().map(Role::getName).toList()
+        );
     }
 }

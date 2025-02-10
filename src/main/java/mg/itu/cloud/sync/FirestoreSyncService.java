@@ -5,6 +5,9 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import mg.itu.cloud.fund.*;
+import mg.itu.cloud.user.Role;
+import mg.itu.cloud.user.User;
+import mg.itu.cloud.user.UserService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +16,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -23,11 +27,13 @@ public class FirestoreSyncService {
     private final FirestoreService firestoreService;
     private final FundTransactionService fundTransactionService;
     private final TransactionTypeRepository transactionTypeRepository;
+    private final UserService userService;
 
-    public FirestoreSyncService(FirestoreService firestoreService, FundTransactionService fundTransactionService, TransactionTypeRepository transactionTypeRepository) {
+    public FirestoreSyncService(FirestoreService firestoreService, FundTransactionService fundTransactionService, TransactionTypeRepository transactionTypeRepository, UserService userService) {
         this.firestoreService = firestoreService;
         this.fundTransactionService = fundTransactionService;
         this.transactionTypeRepository = transactionTypeRepository;
+        this.userService = userService;
     }
 
     @Scheduled(fixedRate = 15000)
@@ -107,6 +113,28 @@ public class FirestoreSyncService {
             }
         } catch (ApiException | ExecutionException | InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Scheduled(fixedRate = 60000)
+    private void syncUser() throws ExecutionException, InterruptedException {
+        List<User> users = userService.getAllUsers();
+        for (User user : users) {
+            // Vérifier si l'utilisateur existe déjà dans Firestore
+            QuerySnapshot qSnapshot = firestoreService.firestore
+                    .collection("users")
+                    .whereEqualTo("id", user.getId())
+                    .get()
+                    .get();
+            if (qSnapshot.isEmpty()) {
+                try {
+                    // Pousser l'utilisateur vers Firestore
+                    Map<String, Object> data = userService.convertUserToMap(user);
+                    firestoreService.sendData("users", data);
+                } catch (ApiException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
